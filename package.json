@@ -5,8 +5,8 @@
   "author": "Vasin Sermsampan <Shinasaki07@gmail.com>",
   "license": "SPDX",
   "scripts": {
-    "start": "node app",
-    "dev": "nodemon app"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
