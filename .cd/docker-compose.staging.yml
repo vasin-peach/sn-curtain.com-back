@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  sn-curtain.com-api-staging:
+    image: registry.gitlab.com/sn-curtain/sn-curtain.com-api:latest
+    container_name: sn-curtain.com-api-staging
+    restart: always
+    ports:
+      - 5601:5000
+    environment:
+      - NODE_ENV=staging
