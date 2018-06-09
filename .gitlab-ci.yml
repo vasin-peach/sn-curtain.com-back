@@ -28,6 +28,7 @@ build-image:
 
 # Deploy Development
 deploy-staging:
+  image: docker:stable
   stage: deploy
   before_script:
     - "apk add --no-cache py-pip"
