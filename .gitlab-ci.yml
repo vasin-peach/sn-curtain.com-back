@@ -41,7 +41,7 @@ deploy-staging:
     - "docker-compose -f .cd/docker-compose.staging.yml up -d"
   environment:
     name: staging
-    url: "https://dev.api.sn-curtain.com"
+    url: "http://dev.api.sn-curtain.com"
   only:
     - master
 
@@ -60,7 +60,7 @@ deploy-production:
     - "docker-compose -f .cd/docker-compose.prod.yml up -d"
   environment:
     name: production
-    url: "https://api.sn-curtain.com"
+    url: "http://api.sn-curtain.com"
   only:
     - master
   when: manual
