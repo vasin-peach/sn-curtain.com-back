@@ -1,5 +1,8 @@
 version: '3'
 
+networks:
+  application-tier:
+
 services:
   sn-curtain.com-api-production:
     image: registry.gitlab.com/sn-curtain/sn-curtain.com-api:latest
@@ -9,3 +12,6 @@ services:
       - 5602:5000
     environment:
       - NODE_ENV=staging
+    networks:
+      - application-tier
+
