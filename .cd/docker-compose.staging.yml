@@ -12,6 +12,9 @@ services:
       - 5601:5000
     environment:
       - NODE_ENV=staging
+      - MONGO_URI=${MONGO_URI_DEV}
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASS=${MONGO_PASS}
     networks:
       - application-tier
 
