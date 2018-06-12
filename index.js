@@ -2,16 +2,19 @@ const express = require("express");
 const app = express();
 const Raven = require('raven');
 
-if (process.env.NODE_ENV == 'production') {
-  Raven.config('https://ad54e369837b4311828b729541f044dd@sentry.io/1224038').install();
-} else {
-  Raven.config('https://c4abd30fb7374b0081bef526fb9517fd@sentry.io/1224030').install();
+if (process.env.NODE_ENV === 'developing' || process.env.NODE_ENV === 'staging') {
+  Raven.config('https://00f59a7dc7f64065a422e74a084c6747@sentry.io/1224068').install();
+} else if (process.env.NODE_ENV === 'production') {
+  Raven.config('https://9f6754c25e0a468bbe2e62817d5fa986@sentry.io/1224084').install();
 }
 
 // The request handler must be the first middleware on the app
 app.use(Raven.requestHandler());
 
-
+// test
+app.get('/', function mainHandler(req, res) {
+  throw new Error('Broke!');
+});
 
 // The error handler must be before any other error middleware
 app.use(Raven.errorHandler());
