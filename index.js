@@ -31,7 +31,7 @@ const mongoURI = process.env.NODE_ENV === 'production' || process.env.NODE_ENV =
   `mongodb://${keys.MONGO_USER}:${keys.MONGO_PASS}@${keys.MONGO_URI}/sn-curtain` :
   `mongodb://${keys.MONGO_URI}/sn-curtain`
 
-console.log(keys);
+console.log(mongoURI);
 
 // Initialize Mongoose
 mongoose.Promise = global.Promise;
