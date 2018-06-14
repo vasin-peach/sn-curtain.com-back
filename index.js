@@ -32,6 +32,7 @@ var mongoURI = process.env.NODE_ENV === 'production' ?
   `mongodb://${keys.mongoURI}/sn-curtain`
 
 console.log(process.env.NODE_ENV || 'WTF NODE_ENV NOT FOUND');
+console.log(process.env.MONGO_USER, process.env.MONGO_PASS, process.env.MONGO_URI || 'URI notfound.')
 console.log(mongoURI);
 
 
