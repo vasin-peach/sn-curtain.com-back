@@ -8,7 +8,7 @@
     "start": "yarn run babel-node ./index.js",
     "build": "babel src -d dist",
     "babel-node": "babel-node --presets=es2015",
-    "dev": "NODE_ENV=development nodemon --exec yarn run babel-node -- ./index.js"
+    "dev": "NODE_ENV=developing nodemon --exec yarn run babel-node -- ./index.js"
   },
   "dependencies": {
     "bcrypt-nodejs": "^0.0.3",
