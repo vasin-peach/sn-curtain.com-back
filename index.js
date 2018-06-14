@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === "production") {
   ).install();
 }
 
-console.log(process.env.NODE_ENV);
+console.log(process.env.NODE_ENV || 'WTF NODE_ENV NOT FOUND');
 
 
 // Declare MongoURI
