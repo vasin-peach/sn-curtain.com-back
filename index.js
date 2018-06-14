@@ -24,6 +24,8 @@ if (process.env.NODE_ENV === "production") {
   ).install();
 }
 
+console.log(process.env.NODE_ENV);
+
 
 // Declare MongoURI
 var mongoURI = process.env.NODE_ENV === 'production' ?

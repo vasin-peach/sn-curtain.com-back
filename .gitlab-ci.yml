@@ -38,6 +38,7 @@ deploy-staging:
     - export MONGO_URI_STAG=$MONGO_URI_STAG
     - export MONGO_USER=$MONGO_USER
     - export MONGO_PASS=$MONGO_PASS
+    - echo $MONGO_URI_STAG
     - "docker-compose -f .cd/docker-compose.staging.yml pull"
     - "docker-compose -f .cd/docker-compose.staging.yml stop"
     - "docker-compose -f .cd/docker-compose.staging.yml rm --force"
