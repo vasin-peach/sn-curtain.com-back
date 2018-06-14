@@ -28,8 +28,8 @@ if (process.env.NODE_ENV === "production") {
 
 // Declare MongoURI
 const mongoURI = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ?
-  `mongodb://${keys.mongoUser}:${keys.mongoPass}@${keys.mongoURI}/sn-curtain` :
-  `mongodb://${keys.mongoURI}/sn-curtain`
+  `mongodb://${keys.MONGO_USER}:${keys.MONGO_PASS}@${keys.MONGO_URI}/sn-curtain` :
+  `mongodb://${keys.MONGO_URI}/sn-curtain`
 
 console.log(process.env.NODE_ENV || 'WTF NODE_ENV NOT FOUND');
 console.log(process.env.MONGO_USER, process.env.MONGO_PASS, process.env.MONGO_URI)

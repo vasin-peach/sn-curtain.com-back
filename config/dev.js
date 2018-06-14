@@ -1,6 +1,6 @@
 // Development config
 module.exports = {
-  mongoURI: 'localhost',
-  mongoUser: '',
-  mongoPassword: '',
+  MONGO_URI: 'localhost',
+  MONGO_USER: '',
+  MONGO_PASS: '',
 };

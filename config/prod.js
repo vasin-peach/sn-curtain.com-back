@@ -1,6 +1,6 @@
 // Production config
 module.exports = {
-  mongoURI: process.env.MONGO_URI_PROD,
-  mongoUser: process.env.MONGO_USER,
-  mongoPassword: process.env.MONGO_PASS,
+  MONGO_URI: process.env.MONGO_URI_PROD,
+  MONGO_USER: process.env.MONGO_USER,
+  MONGO_PASS: process.env.MONGO_PASS,
 };
