@@ -35,6 +35,9 @@ deploy-staging:
     - "pip install docker-compose"
     - "docker-compose version"
   script:
+    - export MONGO_URI_STAG=$MONGO_URI_STAG
+    - export MONGO_USER=$MONGO_USER
+    - export MONGO_PASS=$MONGO_PASS
     - "docker-compose -f .cd/docker-compose.staging.yml pull"
     - "docker-compose -f .cd/docker-compose.staging.yml stop"
     - "docker-compose -f .cd/docker-compose.staging.yml rm --force"
@@ -54,6 +57,9 @@ deploy-production:
     - "pip install docker-compose"
     - "docker-compose version"
   script:
+    - export MONGO_URI_STAG=$MONGO_URI_PROD
+    - export MONGO_USER=$MONGO_USER
+    - export MONGO_PASS=$MONGO_PASS
     - "docker-compose -f .cd/docker-compose.prod.yml pull"
     - "docker-compose -f .cd/docker-compose.prod.yml stop"
     - "docker-compose -f .cd/docker-compose.prod.yml rm --force"
