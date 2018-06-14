@@ -24,7 +24,6 @@ if (process.env.NODE_ENV === "production") {
   ).install();
 }
 
-console.log(process.env.NODE_ENV || 'WTF NODE_ENV NOT FOUND');
 
 
 // Declare MongoURI
@@ -32,6 +31,8 @@ var mongoURI = process.env.NODE_ENV === 'production' ?
   `mongodb://${keys.mongoUser}:${keys.mongoPass}@${keys.mongoURI}/sn-curtain` :
   `mongodb://${keys.mongoURI}/sn-curtain`
 
+console.log(process.env.NODE_ENV || 'WTF NODE_ENV NOT FOUND');
+console.log(mongoURI);
 
 
 // Initialize Mongoose
