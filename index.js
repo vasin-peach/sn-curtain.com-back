@@ -13,30 +13,23 @@ import {
 const app = express();
 const keys = require('./config/keys');
 
-
-
-if (
-  process.env.NODE_ENV === "production" ||
-  process.env.NODE_ENV === "staging"
-) {
-
-  // Declare MongoURI
-  var mongoURI = `mongodb://${keys.mongoUser}:${keys.mongoPass}@${keys.mongoURI}/sn-curtain`;
-  // Initialize Sentry.io
+// Initialize Sentry.io
+if (process.env.NODE_ENV === "production") {
   Raven.config(
     "https://9f6754c25e0a468bbe2e62817d5fa986@sentry.io/1224084"
   ).install();
-
-} else {
-
-  // Declare MongoURI
-  var mongoURI = `mongodb://${keys.mongoURI}/sn-curtain`;
-  // Initialize Sentry.io
+} else if (process.env.NODE_ENV === "staging") {
   Raven.config(
     "https://00f59a7dc7f64065a422e74a084c6747@sentry.io/1224068"
   ).install();
-
 }
+
+
+// Declare MongoURI
+var mongoURI = process.env.NODE_ENV === 'production' ?
+  `mongodb://${keys.mongoUser}:${keys.mongoPass}@${keys.mongoURI}/sn-curtain` :
+  `mongodb://${keys.mongoURI}/sn-curtain`
+
 
 
 // Initialize Mongoose
