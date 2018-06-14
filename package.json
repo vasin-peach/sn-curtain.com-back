@@ -11,6 +11,7 @@
     "dev": "NODE_ENV=development nodemon --exec yarn run babel-node -- ./index.js"
   },
   "dependencies": {
+    "bcrypt": "^2.0.1",
     "body-parser": "^1.18.2",
     "connect-mongo": "^2.0.1",
     "cookie-session": "^2.0.0-beta.3",
