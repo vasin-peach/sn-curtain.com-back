@@ -28,8 +28,8 @@ if (process.env.NODE_ENV === "production") {
 
 // Declare MongoURI
 const mongoURI = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging' ?
-  `mongodb://${keys.MONGO_USER}:${keys.MONGO_PASS}@${keys.MONGO_URI}` :
-  `mongodb://${keys.MONGO_URI}`
+  `mongodb://${keys.MONGO_USER}:${keys.MONGO_PASS}@${keys.MONGO_URI}/${keys.MONGO_DB}` :
+  `mongodb://${keys.MONGO_URI}/${keys.MONGO_DB}`
 
 console.log(mongoURI);
 
