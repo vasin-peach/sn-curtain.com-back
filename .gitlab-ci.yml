@@ -23,7 +23,7 @@ build-image:
   script:
     - "docker build --pull --rm -t $DOCKER_IMAGE_NAME ."
     - "docker push $DOCKER_IMAGE_NAME"
-  after_script:"
+  after_script:
     - "docker image rm -f $DOCKER_IMAGE_NAME:latest"
 
 # Deploy Development
