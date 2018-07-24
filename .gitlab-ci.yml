@@ -1,6 +1,8 @@
+# Step
 stages:
   - build
   - deploy
+
 
 # When using dind, it's wise to use the overlayfs driver for
 # improved performance.
@@ -21,10 +23,10 @@ build-image:
   only:
     - master
   script:
-    - "docker build --pull --rm -t $DOCKER_IMAGE_NAME ."
+    - "docker build --pull --no-chage -t $DOCKER_IMAGE_NAME ."
     - "docker push $DOCKER_IMAGE_NAME"
   after_script:
-    - "docker image rm -f $DOCKER_IMAGE_NAME:latest"
+   - "docker rmi $(docker images -qa -f 'dangling=true')"
 
 # Deploy Development
 deploy-staging:
@@ -39,6 +41,8 @@ deploy-staging:
     - "docker-compose -f .cd/docker-compose.staging.yml stop"
     - "docker-compose -f .cd/docker-compose.staging.yml rm --force"
     - "docker-compose -f .cd/docker-compose.staging.yml up -d"
+  after_script:
+    - "docker rmi $(docker images -qa -f 'dangling=true')"
   environment:
     name: staging
     url: "http://dev.api.sn-curtain.com"
@@ -58,6 +62,8 @@ deploy-production:
     - "docker-compose -f .cd/docker-compose.prod.yml stop"
     - "docker-compose -f .cd/docker-compose.prod.yml rm --force"
     - "docker-compose -f .cd/docker-compose.prod.yml up -d"
+  after_script:
+    - "docker rmi $(docker images -qa -f 'dangling=true')"
   environment:
     name: production
     url: "http://api.sn-curtain.com"
