@@ -6,9 +6,8 @@ import graphqlHTTP from "express-graphql";
 import {
   buildSchema
 } from "graphql";
-import {
-  emit
-} from 'cluster';
+
+
 const app = express();
 const keys = require('./config/keys');
 
@@ -37,19 +36,20 @@ app.listen(5000, function () {
 
 // Connect to mongoDB
 const db = mongoose.connection;
-db.once('open', () => console.log("\x1b[32m", '\n[INFO] Mongodb connected.'));
+db.on('open', () => console.log("\x1b[32m", '\n[INFO] Connection Open - ready to connect.'));
 db.on('error', function (error) {
   console.error("\x1b[31m", '\n[ERROR] Failed to connect to MongoDB - retrying in 5 sec \n', "\x1b[37m\n", error);
-  setTimeout(() => {
-    mongoose.disconnect();
-  }, 5000);
+  mongoose.disconnect();
 });
 db.on('disconnected', () => {
   console.log("\x1b[36m", "\n[INFO] Mongodb disconnected", "\x1b[37m");
-  mongoose.connect(mongoURI, {
-    auto_reconnect: true
-  });
+  setTimeout(() => {
+    mongoose.connect(mongoURI, {
+      auto_reconnect: true
+    });
+  }, 5000);
 })
+db.on('connected', () => console.log("\x1b[32m", '\n[INFO] Mongodb connected.'))
 mongoose.connect(mongoURI, {
   auto_reconnect: true
 });
