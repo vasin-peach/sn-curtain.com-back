@@ -35,6 +35,8 @@ build-image:
 deploy-staging:
   stage: deploy
   image: docker:stable
+  tags:
+    - deploy
   before_script:
     - "apk add --no-cache py-pip"
     - "pip install docker-compose"
@@ -56,6 +58,8 @@ deploy-staging:
 deploy-production:
   stage: deploy
   image: docker:stable
+  tags:
+    - deploy
   before_script:
     - "apk add --no-cache py-pip"
     - "pip install docker-compose"
