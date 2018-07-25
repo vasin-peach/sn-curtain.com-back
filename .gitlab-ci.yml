@@ -20,7 +20,6 @@ build-image:
   image: docker:stable
   tags:
     - docker
-    - build
   services:
     - docker:dind
   only:
