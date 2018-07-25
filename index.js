@@ -35,76 +35,26 @@ app.listen(5000, function () {
   console.log("Express app listening on port 5000 [" + process.env.NODE_ENV + "]");
 });
 
-
-
-// Connect to mongodb
-mongoose.connect(mongoURI, {
-  autoReconnect: true,
-  reconnectTries: Number.MAX_VALUE,
-  reconnectTries: 1000,
-});
+// Connect to mongoDB
 const db = mongoose.connection;
-db.on('reconnect', function () {
-  emit('reconnect');
-})
-db.on('connecting', function () {
-  console.log("\x1b[34m", '\n[INFO] Try connecting to MongoDB... \n');
+db.once('open', () => console.log("\x1b[32m", '\n[INFO] Mongodb connected.'));
+db.on('error', function (error) {
+  console.error("\x1b[31m", '\n[ERROR] Failed to connect to MongoDB - retrying in 5 sec \n', "\x1b[37m\n", error);
+  setTimeout(() => {
+    mongoose.disconnect();
+  }, 5000);
 });
-db.once('open', function () {
-  console.log("\x1b[32m", '\n[INFO] Connected to database \n');
-})
-db.on('error', function (err) {
-  console.error("\x1b[31m", '\n[ERROR] Failed to connect to database \n');
-  mongoose.disconnect();
-});
-db.on('reconnected', function () {
-  console.log("\x1b[35m", '\n[INFO] MongoDB reconnected! \n');
-});
-db.on('disconnected', function () {
-  console.log("\x1b[35m", '\n[INFO] MongoDB disconnected! \n');
+db.on('disconnected', () => {
+  console.log("\x1b[36m", "\n[INFO] Mongodb disconnected", "\x1b[37m");
   mongoose.connect(mongoURI, {
-    autoReconnect: true,
-    reconnectInterval: 36000
+    auto_reconnect: true
   });
+})
+mongoose.connect(mongoURI, {
+  auto_reconnect: true
 });
 
 
 // Include routes
 const routes = require("./routes/router");
 app.use("/", routes);
-
-
-// // Initialize Mongoose
-// mongoose.Promise = global.Promise;
-// mongoose.connect(mongoURI)
-//   .then(() => {
-//     // Start server at port 5000
-//     app.listen(5000, function () {
-//       console.log("Express app listening on port 5000 [" + process.env.NODE_ENV + "]");
-//     });
-//   })
-//   .catch((err) => {
-//     // Return error and exit(1)
-//     Raven.captureException(err)
-//     console.error('App starting error:', err.stack);
-//     router.get("/", function (req, res) {
-//       res.status(403).json({
-//         status: 403,
-//         message: 'Forbidden',
-//         error: "Can not connect to database."
-//       })
-//     })
-
-//     // process.exit(1);
-//   })
-
-// // Require MongoDB Models
-// const User = require('./models/User');
-
-// User.create({
-//   name: 'vasin sermsampan',
-//   username: 'peaches',
-//   password: 'password'
-// }, (err, data) => {
-//   console.log(err || data);
-// })
