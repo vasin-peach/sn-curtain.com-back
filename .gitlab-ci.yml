@@ -18,6 +18,9 @@ before_script:
 build-image:
   stage: build
   image: docker:stable
+  tags:
+    - docker
+    - build
   services:
     - docker:dind
   only:
