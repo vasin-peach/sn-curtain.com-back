@@ -38,7 +38,7 @@ app.listen(5000, function () {
 const db = mongoose.connection;
 db.on('open', () => console.log("\x1b[32m", '\n[INFO] Connection Open - ready to connect.'));
 db.on('error', function (error) {
-  console.error("\x1b[31m", '\n[ERROR] Failed to connect to MongoDB - retrying in 5 sec \n', "\x1b[37m\n", error);
+  console.error("\x1b[31m", '\n[ERROR] Failed to connect to MongoDB - retrying in 30 sec', "\x1b[37m\n", error);
   mongoose.disconnect();
 });
 db.on('disconnected', () => {
@@ -47,7 +47,7 @@ db.on('disconnected', () => {
     mongoose.connect(mongoURI, {
       auto_reconnect: true
     });
-  }, 5000);
+  }, 30000);
 })
 db.on('connected', () => console.log("\x1b[32m", '\n[INFO] Mongodb connected.'))
 mongoose.connect(mongoURI, {
