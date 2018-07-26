@@ -2,29 +2,29 @@ import express from 'express';
 import passport from 'passport';
 import User from '../../models/User';
 import keys from '../../config/keys';
+
 const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuthStrategy;
 const router = express.Router();
 
-
-passport.serializeUser((user, done) => { // store data in session
+passport.serializeUser(function (user, done) {
   done(null, user);
 })
-passport.deserializeUser(function (obj, done) { // get data from session
+passport.deserializeUser(function (obj, done) {
   done(null, obj)
 })
 
-console.log(keys);
 
 // Init facebook strategy
 passport.use(new FacebookStrategy({
   clientID: keys.FACEBOOK_CLIENT,
   clientSecret: keys.FACEBOOK_SECRET,
-  callbackURL: keys.FACEBOOK_CALLBACK
+  callbackURL: keys.FACEBOOK_CALLBACK,
+  profileFields: ['id', 'emails', 'name', 'picture', 'short_name']
 }, (accessToken, refreshToken, profile, done) => {
-  console.log(profile);
   done(null, profile);
 }))
+
 
 // // Init google strategy
 // passport.use(new GoogleStrategy({
@@ -35,9 +35,6 @@ passport.use(new FacebookStrategy({
 //   console.log(profile);
 //   done(null, profile);
 // }))
-
-
-
 
 
 /*
@@ -58,13 +55,26 @@ router.get('/facebook/callback', passport.authenticate('facebook', {
 // }))
 
 router.get('/profile', (req, res) => {
-  console.log(req.body)
-  res.json(req.body)
+  res.status(200).json({
+    status: 200,
+    message: 'Logged in',
+    data: req.user,
+    error: null
+  })
 })
 
 router.get('/error', (req, res) => {
-  console.log(req.body)
-  res.send(req.body);
+  res.status(401).json({
+    status: 400,
+    message: 'Unauthorized',
+    data: null,
+    error: req.body
+  })
+})
+
+router.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('https://sn-curtain.com');
 })
 
 module.exports = router;

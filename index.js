@@ -7,7 +7,8 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import jwtDecode from 'jwt-decode';
-import cookieSession from 'cookie-session';
+import cookieParser from 'cookie-parser';
+// import cookieSession from 'cookie-session';
 import passport from 'passport';
 import _ from 'lodash';
 
@@ -15,7 +16,6 @@ import _ from 'lodash';
 
 const app = express();
 const keys = require('./config/keys');
-
 
 
 // Initialize Sentry.io
@@ -54,6 +54,14 @@ app.use(cors({
   origin: 'https://sn-curtain.com',
   credentials: true
 }));
+// cookie-parser
+app.use(cookieParser())
+
+app.use(session({
+  secret: keys.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true
+}))
 // Init passport
 app.use(passport.initialize())
 app.use(passport.session())
@@ -99,15 +107,7 @@ mongoose.connect(mongoURI, {
 
 // Init body Parser
 app.use(bodyParser.json());
-app.use(
-  cookieSession({
-    maxAge: 12 * 60 * 60 * 1000,
-    keys: [keys.cookieKey],
-    cookie: {
-      secure: true
-    }
-  })
-);
+
 
 
 
