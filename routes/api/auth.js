@@ -14,6 +14,8 @@ passport.deserializeUser(function (obj, done) { // get data from session
   done(null, obj)
 })
 
+console.log(keys);
+
 // Init facebook strategy
 passport.use(new FacebookStrategy({
   clientID: keys.FACEBOOK_CLIENT,
@@ -33,6 +35,8 @@ passport.use(new GoogleStrategy({
   console.log(profile);
   done(null, profile);
 }))
+
+
 
 
 
