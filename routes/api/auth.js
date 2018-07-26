@@ -3,7 +3,7 @@ import passport from 'passport';
 import User from '../../models/User';
 import keys from '../../config/keys';
 const FacebookStrategy = require('passport-facebook').Strategy;
-const GoogleStrategy = require('passport-google').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuthStrategy;
 const router = express.Router();
 
 
@@ -28,10 +28,10 @@ passport.use(new FacebookStrategy({
 
 // Init google strategy
 passport.use(new GoogleStrategy({
-  clientID: keys.GOOGLE_CLIENT,
-  clientSecret: keys.GOOGLE_SECRET,
+  consumerKey: keys.GOOGLE_CLIENT,
+  consumerSecret: keys.GOOGLE_SECRET,
   callbackURL: keys.GOOGLE_CALLBACK
-}, (accessToken, refreshToken, profile, done) => {
+}, (token, tokenSecret, profile, done) => {
   console.log(profile);
   done(null, profile);
 }))
