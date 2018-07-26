@@ -26,15 +26,15 @@ passport.use(new FacebookStrategy({
   done(null, profile);
 }))
 
-// Init google strategy
-passport.use(new GoogleStrategy({
-  consumerKey: keys.GOOGLE_CLIENT,
-  consumerSecret: keys.GOOGLE_SECRET,
-  callbackURL: keys.GOOGLE_CALLBACK
-}, (token, tokenSecret, profile, done) => {
-  console.log(profile);
-  done(null, profile);
-}))
+// // Init google strategy
+// passport.use(new GoogleStrategy({
+//   consumerKey: keys.GOOGLE_CLIENT,
+//   consumerSecret: keys.GOOGLE_SECRET,
+//   callbackURL: keys.GOOGLE_CALLBACK
+// }, (accessToken, refreshToken, profile, done) => {
+//   console.log(profile);
+//   done(null, profile);
+// }))
 
 
 
@@ -51,20 +51,20 @@ router.get('/facebook/callback', passport.authenticate('facebook', {
   failureRedirect: '/auth/error'
 }))
 
-router.get('/google', passport.authenticate('google'))
-router.get('/google/callback', passport.authenticate('facebook', {
-  successRedirect: '/auth/profile',
-  failureRedirect: '/auth/error'
-}))
+// router.get('/google', passport.authenticate('google'))
+// router.get('/google/callback', passport.authenticate('google', {
+//   successRedirect: '/auth/profile',
+//   failureRedirect: '/auth/error'
+// }))
 
 router.get('/profile', (req, res) => {
-  console.log(req.user)
-  res.json(req.user)
+  console.log(req.body)
+  res.json(req.body)
 })
 
 router.get('/error', (req, res) => {
-  console.log(req.user)
-  res.send('error naja');
+  console.log(req.body)
+  res.send(req.body);
 })
 
 module.exports = router;
