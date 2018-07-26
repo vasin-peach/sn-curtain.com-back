@@ -22,7 +22,7 @@ passport.use(new FacebookStrategy({
 
 router.get('/', (req, res) => res.send('auth api.'))
 router.get('/facebook', passport.authenticate('facebook'))
-router.get('/facebok/callback', passport.authenticate('facebook', {
+router.get('/facebook/callback', passport.authenticate('facebook', {
   successRedirect: '/auth/profile',
   failureRedirect: '/auth/error'
 }))
