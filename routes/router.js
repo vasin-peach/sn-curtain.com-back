@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
+// Import Route
 const AuthRoute = require("./api/auth");
+const ProductRoute = require('./api/product');
 
 // Default route
 router.get("/", function (req, res) {
@@ -10,5 +12,9 @@ router.get("/", function (req, res) {
     message: 'Healty!.'
   })
 })
+
+// Product Route
+router.use('/product', ProductRoute)
+router.use('/auth', AuthRoute)
 
 module.exports = router;
