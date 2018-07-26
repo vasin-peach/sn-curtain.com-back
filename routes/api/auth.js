@@ -5,8 +5,6 @@ import keys from '../../config/keys';
 const FacebookStrategy = require('passport-facebook').Strategy;
 const router = express.Router();
 
-console.log(keys);
-
 passport.use(new FacebookStrategy({
   clientID: keys.FACEBOOK_CLIENT,
   clientSecret: keys.FACEBOOK_SECRET,
