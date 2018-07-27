@@ -69,8 +69,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 // Init CSRF
-app.use(middlewareCSRF);
 app.use(csrf());
+app.use(middlewareCSRF);
 
 
 
