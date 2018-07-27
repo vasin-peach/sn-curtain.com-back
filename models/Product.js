@@ -23,6 +23,12 @@ const productSchema = new Schema({
   price: {
     type: Number
   },
+  quantity: {
+    type: Number
+  },
+  like: {
+    type: Number
+  },
   brand: {
     src: {
       type: String

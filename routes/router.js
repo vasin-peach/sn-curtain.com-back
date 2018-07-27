@@ -3,7 +3,7 @@ const router = express.Router();
 
 // Import Route
 const AuthRoute = require("./api/auth");
-const ProductRoute = require('./api/product');
+const ProductRoute = require('./api/product/product.js');
 
 // Default route
 router.get("/", function (req, res) {
