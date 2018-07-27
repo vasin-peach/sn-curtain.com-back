@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const pathToRegexp = require('path-to-regexp');
 const _ = require('lodash');
+const msg = require('../responseMsg');
 
 // Import Model
 const Product = require('../../../models/Product');
-const msg = require('../responseMsg');
 
 // Declare Variable
 var amountPerPage = 12;
@@ -21,19 +20,9 @@ var color = null
 router.get("/all", (req, res, next) => {
   Product.find({}, (err, data) => {
     if (err) {
-      return res.status(400).json({
-        status: 400,
-        message: 'failed',
-        err: err,
-        data: data
-      })
+      return res.status(400).json(msg.isfail(data, err))
     } else {
-      return res.status(200).json({
-        status: 200,
-        message: 'Success',
-        err: err,
-        data: data
-      })
+      return res.status(200).json(msg.isSuccess(data, err))
     }
   })
 })

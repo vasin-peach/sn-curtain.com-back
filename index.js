@@ -6,16 +6,18 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import session from 'express-session';
-import jwtDecode from 'jwt-decode';
 import cookieParser from 'cookie-parser';
-// import cookieSession from 'cookie-session';
 import passport from 'passport';
-import _ from 'lodash';
+import csrf from 'csurf';
+// import _ from 'lodash';
+// import jwtDecode from 'jwt-decode';
 
 
 
 const app = express();
 const keys = require('./config/keys');
+const middlewareCSRF = require('./middleware/middlewareCSRF');
+
 
 
 // Initialize Sentry.io
@@ -65,6 +67,10 @@ app.use(session({
 // Init passport
 app.use(passport.initialize())
 app.use(passport.session())
+
+// Init CSRF
+app.use(middlewareCSRF);
+app.use(csrf());
 
 
 
