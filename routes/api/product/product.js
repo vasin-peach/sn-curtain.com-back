@@ -121,9 +121,7 @@ router.get('/get/:page/:tag/:color', (req, res) => {
 router.get('/popular', (req, res) => {
 
   // query get top 6 of product
-  Product.find({
-    name: 'fwefew'
-  }).sort({}).sort({
+  Product.find({}).sort({}).sort({
     view: -1
   }).limit(6).exec((err, data) => {
     if (_.isEmpty(data)) { // check response is empty
