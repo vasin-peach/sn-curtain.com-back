@@ -10,5 +10,6 @@ module.exports = {
   FACEBOOK_CALLBACK: 'http://localhost:5000/auth/facebook/callback',
   GOOGLE_SECRET: 'veHSlIWNqnBU_P4j8LGK73LI',
   GOOGLE_CLIENT: '227591138588-tke4a564kmh04qdnml40uu1d4t87r5kh.apps.googleusercontent.com',
-  GOOGLE_CALLBACK: 'http://127.0.0.1:5000/auth/google/callback'
+  GOOGLE_CALLBACK: 'http://127.0.0.1:5000/auth/google/callback',
+  FRONTEND_URI: 'http://localhost:8080'
 };

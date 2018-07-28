@@ -29,6 +29,9 @@ const productSchema = new Schema({
   like: {
     type: Number
   },
+  view: {
+    type: Number
+  },
   brand: {
     src: {
       type: String
@@ -43,12 +46,12 @@ const productSchema = new Schema({
   },
   category: {
     tag: [{
-      name: {
+      val: {
         type: String
       },
     }],
     color: [{
-      name: {
+      val: {
         type: String
       },
       hex: {

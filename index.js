@@ -44,6 +44,19 @@ if (process.env.NODE_ENV != 'developing') {
 }
 
 
+// // Allow CORS
+// app.all('/', (req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', keys.FRONTEND_URI)
+//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+//   res.Header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//   // // Set to true if you need the website to include cookies in the requests sent
+//   // // to the API (e.g. in case you use sessions)
+//   // res.Header('Access-Control-Allow-Credentials', true);
+
+// })
+
+
+
 // Use helmet for addional security
 app.use(helmet());
 // Body Parser
@@ -53,7 +66,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 // Cors
 app.use(cors({
-  origin: 'https://sn-curtain.com',
+  origin: keys.FRONTEND_URI,
   credentials: true
 }));
 // cookie-parser

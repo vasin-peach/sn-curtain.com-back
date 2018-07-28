@@ -22,6 +22,7 @@ services:
       - GOOGLE_CALLBACK_PROD=${GOOGLE_CALLBACK_PROD}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_SECRET_ID=${GOOGLE_SECRET_ID}
+      - FRONTEND_URI=${FRONTEND_URI_PROD}
     networks:
       - application-tier
 

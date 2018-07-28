@@ -29,7 +29,7 @@ router.get("/all", (req, res, next) => {
 
 
 // get product by page
-router.get('/:page', (req, res) => {
+router.get('/get/:page', (req, res) => {
 
   // check page is number
   if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
@@ -55,7 +55,7 @@ router.get('/:page', (req, res) => {
 })
 
 // get product by page, tag
-router.get('/:page/:tag/', (req, res) => {
+router.get('/get/:page/:tag/', (req, res) => {
 
   // check page is number
   if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
@@ -83,7 +83,7 @@ router.get('/:page/:tag/', (req, res) => {
 })
 
 // get product by page, tag, color
-router.get('/:page/:tag/:color', (req, res) => {
+router.get('/get/:page/:tag/:color', (req, res) => {
 
   // check page is number
   if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
@@ -117,8 +117,28 @@ router.get('/:page/:tag/:color', (req, res) => {
   })
 })
 
+// get popular product
+router.get('/popular', (req, res) => {
+
+  // query get top 6 of product
+  Product.find({
+    name: 'fwefew'
+  }).sort({}).sort({
+    view: -1
+  }).limit(6).exec((err, data) => {
+    if (_.isEmpty(data)) { // check response is empty
+      return res.status(404).json(msg.isEmpty(data, err))
+    }
+    if (err) {
+      return res.status(400).json(msg.isfail(data, err))
+    } else {
+      return res.status(200).json(msg.isSuccess(data, err))
+    }
+  })
+})
+
 // Create product
-router.post("/", (req, res, next) => {
+router.post("/create", (req, res, next) => {
   Product.create(req.body, (err, data) => {
     if (err) console.log(err);
     else {
