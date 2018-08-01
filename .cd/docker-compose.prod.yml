@@ -1,15 +1,12 @@
 version: '3'
 
-networks:
-  application-tier:
-
 services:
   sn-curtain.com-api-production:
     image: registry.gitlab.com/sn-curtain/sn-curtain.com-api:latest
     container_name: sn-curtain.com-api-production
     restart: always
     ports:
-      - 5602:5000
+      - 80
     environment:
       - NODE_ENV=production
       - MONGO_URI=${MONGO_URI_PROD}
@@ -25,4 +22,7 @@ services:
       - FRONTEND_URI=${FRONTEND_URI_PROD}
     networks:
       - application-tier
+
+networks:
+  application-tier:
 

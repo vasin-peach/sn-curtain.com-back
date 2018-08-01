@@ -119,7 +119,7 @@ router.get('/get/:page/:tag/:color', (req, res) => {
 
 // get popular product
 router.get('/popular', (req, res) => {
-
+  console.log(req.body, 'hi');
   // query get top 6 of product
   Product.find({}).sort({}).sort({
     view: -1
