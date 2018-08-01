@@ -56,6 +56,27 @@ if (process.env.NODE_ENV != 'developing') {
 // })
 
 
+var whitelist = [
+  'https://sn-curtain.com',
+  'http://sn-curtain.com',
+  'https://www.sn-curtain.com',
+  'http://www.sn-curtain.com',
+  'https://dev.sn-curtain.com',
+  'http://dev.sn-curtain.com'
+]
+
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allow by CORS'))
+    }
+  },
+  credentials: true
+}
+
+
 // Use helmet for addional security
 app.use(helmet());
 // Body Parser
@@ -64,10 +85,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 // Cors
-app.use(cors({
-  origin: keys.FRONTEND_URI,
-  credentials: true
-}));
+app.use(cors(corsOptions));
 // cookie-parser
 app.use(cookieParser())
 
