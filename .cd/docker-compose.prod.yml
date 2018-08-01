@@ -6,7 +6,7 @@ services:
     container_name: sn-curtain.com-api-production
     restart: always
     ports:
-      - 80
+      - 5000
     environment:
       - NODE_ENV=production
       - MONGO_URI=${MONGO_URI_PROD}

@@ -6,7 +6,7 @@ services:
     container_name: sn-curtain.com-api-staging
     restart: always
     ports:
-      - 80
+      - 5000
     environment:
       - NODE_ENV=staging
       - MONGO_URI=${MONGO_URI_STAG}

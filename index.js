@@ -55,7 +55,6 @@ if (process.env.NODE_ENV != 'developing') {
 
 // })
 
-console.log(process.env);
 
 // Use helmet for addional security
 app.use(helmet());
