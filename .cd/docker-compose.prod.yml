@@ -6,10 +6,10 @@ services:
     container_name: sn-curtain.com-api-production
     restart: always
     ports:
-      - 5601:5000
+      - 5000
     environment:
       - VIRTUAL_PORT=api.sn-curtain.com
-      - VIRTUAL_PORT=5601
+      - VIRTUAL_PORT=5000
       - NODE_ENV=production
       - MONGO_URI=${MONGO_URI_PROD}
       - MONGO_USER=${MONGO_USER}
@@ -21,7 +21,7 @@ services:
       - GOOGLE_CALLBACK_PROD=${GOOGLE_CALLBACK_PROD}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_SECRET_ID=${GOOGLE_SECRET_ID}
-      - FRONTEND_URI=${FRONTEND_URI_PROD}
+      - FRONTEND_URI=${FRONTEND_URI_PROD}cle
     networks:
       - application-tier
 
