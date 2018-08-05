@@ -45,19 +45,20 @@ const productSchema = new Schema({
     }]
   },
   category: {
+    type: {
+      type: String
+    },
     tag: [{
-      val: {
-        type: String
-      },
+      type: String
     }],
-    color: [{
+    color: {
       val: {
         type: String
       },
       hex: {
         type: String
       }
-    }]
+    }
   },
   specs: [{
     name: {

@@ -11,6 +11,7 @@ var amountPerPage = 12;
 var currentPage = 1;
 var tag = null
 var color = null
+var type = null
 
 /*
   ROUTES
@@ -66,7 +67,7 @@ router.get('/get/:page/:tag/', (req, res) => {
 
   // query
   Product.find({
-    "category.tag.name": tag
+    "category.tag": tag
   }, {}, { // get range of data
     skip: (currentPage - 1) * amountPerPage,
     limit: amountPerPage
@@ -96,10 +97,49 @@ router.get('/get/:page/:tag/:color', (req, res) => {
   // query
   Product.find({
     $and: [{
-        "category.tag.name": tag
+        "category.tag": tag
       },
       {
-        "category.color.name": color
+        "category.color.val": color
+      }
+    ]
+  }, {}, { // get range of data
+    skip: (currentPage - 1) * amountPerPage,
+    limit: amountPerPage
+  }, (err, data) => {
+    if (_.isEmpty(data)) { // check response is empty
+      return res.status(404).json(msg.isEmpty(data, err))
+    }
+    if (err) {
+      return res.status(400).json(msg.isfail(data, err))
+    } else {
+      return res.status(200).json(msg.isSuccess(data, err))
+    }
+  })
+})
+
+// get product by page, tag, type, color
+router.get('/get/:page/:tag/:color/:type', (req, res) => {
+
+  // check page is number
+  if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
+
+  // define filter
+  currentPage = (req.params.page ? req.params.page : currentPage);
+  tag = (req.params.tag ? req.params.tag : tag);
+  color = (req.params.color ? req.params.color : color);
+  type = (req.params.type ? req.params.type : type);
+
+  // query
+  Product.find({
+    $and: [{
+        "category.tag": tag
+      },
+      {
+        "category.color.val": color
+      },
+      {
+        "category.type": type
       }
     ]
   }, {}, { // get range of data
@@ -119,7 +159,6 @@ router.get('/get/:page/:tag/:color', (req, res) => {
 
 // get popular product
 router.get('/popular', (req, res) => {
-  console.log(req.body, 'hi');
   // query get top 6 of product
   Product.find({}).sort({}).sort({
     view: -1
