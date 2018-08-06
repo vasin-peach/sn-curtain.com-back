@@ -4,14 +4,9 @@ const {
 } = mongoose;
 
 const productSchema = new Schema({
-  name: [{
-    lang: {
-      type: String
-    },
-    val: {
-      type: String
-    }
-  }],
+  name: {
+    type: String
+  },
   desc: [{
     lang: {
       type: String
@@ -43,6 +38,9 @@ const productSchema = new Schema({
         type: String
       }
     }]
+  },
+  fabric: {
+    type: String
   },
   category: {
     type: {

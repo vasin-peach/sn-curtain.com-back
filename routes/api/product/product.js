@@ -12,6 +12,7 @@ var currentPage = 1;
 var tag = null
 var color = null
 var type = null
+var search = null
 
 /*
   ROUTES
@@ -30,7 +31,7 @@ router.get("/all", (req, res, next) => {
 
 
 // get product by page
-router.get('/get/:page', (req, res) => {
+router.get('/get/:search/:page', (req, res) => {
 
   // check page is number
   if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
@@ -38,9 +39,15 @@ router.get('/get/:page', (req, res) => {
 
   // define filter
   currentPage = (req.params.page ? req.params.page : currentPage);
+  search = req.params.search == " " ? "" : req.params.search;
+
+  // regix
+  var regex = new RegExp(".*" + search + ".*");
 
   // query
-  Product.find({}, {}, { // get range of data
+  Product.find({
+    "name": regex
+  }, {}, { // get range of data
     skip: (currentPage - 1) * amountPerPage,
     limit: amountPerPage
   }, (err, data) => {
