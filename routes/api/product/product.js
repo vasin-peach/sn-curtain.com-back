@@ -130,10 +130,11 @@ router.get('/get/:search/:page/:fabric/:color/:type', (req, res) => {
   // check page is number
   if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
 
+
   // define filter
   currentPage = (req.params.page ? req.params.page : currentPage);
-  search = (req.params.search && req.params.color != ' ' ? {
-    "name": req.params.search
+  search = (req.params.search && req.params.search != ' ' ? {
+    "name": RegExp(req.params.search)
   } : {});
   fabric = (req.params.fabric && req.params.fabric != ' ' ? {
     "fabric": req.params.fabric
@@ -145,10 +146,11 @@ router.get('/get/:search/:page/:fabric/:color/:type', (req, res) => {
     "category.type": req.params.type
   } : {});
 
+  console.log([search, fabric, color, type])
 
   // query
   Product.find({
-    $and: [fabric, color, type]
+    $and: [search, fabric, color, type]
   }, {}, { // get range of data
     skip: (currentPage - 1) * amountPerPage,
     limit: amountPerPage
