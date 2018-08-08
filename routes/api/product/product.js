@@ -9,7 +9,7 @@ const Product = require('../../../models/Product');
 // Declare Variable
 var amountPerPage = 12;
 var currentPage = 1;
-var tag = null
+var fabric = null
 var color = null
 var type = null
 var search = null
@@ -62,19 +62,19 @@ router.get('/get/:search/:page', (req, res) => {
   })
 })
 
-// get product by page, tag
-router.get('/get/:page/:tag/', (req, res) => {
+// get product by page, fabric
+router.get('/get/:page/:fabric/', (req, res) => {
 
   // check page is number
   if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
 
   // define filter
   currentPage = (req.params.page ? req.params.page : currentPage);
-  tag = (req.params.tag ? req.params.tag : tag);
+  fabric = (req.params.fabric ? req.params.fabric : fabric);
 
   // query
   Product.find({
-    "category.tag": tag
+    "category.fabric": fabric
   }, {}, { // get range of data
     skip: (currentPage - 1) * amountPerPage,
     limit: amountPerPage
@@ -90,21 +90,21 @@ router.get('/get/:page/:tag/', (req, res) => {
   })
 })
 
-// get product by page, tag, color
-router.get('/get/:page/:tag/:color', (req, res) => {
-
+// get product by page, fabric, color
+router.get('/get/:page/:fabric/:color', (req, res) => {
+  console.log('test');
   // check page is number
   if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
 
   // define filter
   currentPage = (req.params.page ? req.params.page : currentPage);
-  tag = (req.params.tag ? req.params.tag : tag);
+  fabric = (req.params.fabric ? req.params.fabric : fabric);
   color = (req.params.color ? req.params.color : color);
 
   // query
   Product.find({
     $and: [{
-        "category.tag": tag
+        "category.fabric": fabric
       },
       {
         "category.color.val": color
@@ -125,30 +125,30 @@ router.get('/get/:page/:tag/:color', (req, res) => {
   })
 })
 
-// get product by page, tag, type, color
-router.get('/get/:page/:tag/:color/:type', (req, res) => {
-
+// get product by page, fabric, type, color
+router.get('/get/:search/:page/:fabric/:color/:type', (req, res) => {
   // check page is number
   if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
 
   // define filter
   currentPage = (req.params.page ? req.params.page : currentPage);
-  tag = (req.params.tag ? req.params.tag : tag);
-  color = (req.params.color ? req.params.color : color);
-  type = (req.params.type ? req.params.type : type);
+  search = (req.params.search && req.params.color != ' ' ? {
+    "name": req.params.search
+  } : {});
+  fabric = (req.params.fabric && req.params.fabric != ' ' ? {
+    "fabric": req.params.fabric
+  } : {});
+  color = (req.params.color && req.params.color != ' ' ? {
+    "category.color.val": req.params.color
+  } : {});
+  type = (req.params.type && req.params.type != ' ' ? {
+    "category.type": req.params.type
+  } : {});
+
 
   // query
   Product.find({
-    $and: [{
-        "category.tag": tag
-      },
-      {
-        "category.color.val": color
-      },
-      {
-        "category.type": type
-      }
-    ]
+    $and: [fabric, color, type]
   }, {}, { // get range of data
     skip: (currentPage - 1) * amountPerPage,
     limit: amountPerPage
