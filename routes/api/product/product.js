@@ -18,7 +18,9 @@ var search = null
   ROUTES
 */
 
-// get product all
+///
+// Get product all
+///
 router.get("/all", (req, res, next) => {
   Product.find({}, (err, data) => {
     if (err) {
@@ -30,8 +32,43 @@ router.get("/all", (req, res, next) => {
 })
 
 
-// get product by page, fabric, type, color
-router.get('/get/:search/:page/:fabric/:color/:type', (req, res) => {
+///
+// Get product by page, fabric, type, color
+///
+router.get('/get/:search/:page/:fabric/:color/:type', async (req, res) => {
+
+  async function returnResponse(search, fabric, color, type) {
+
+    let count = new Promise((resolve, reject) => {
+      // query count item
+      Product.find({
+        $and: [search, fabric, color, type]
+      }).count((err, data) => {
+        return resolve(data);
+      })
+    })
+
+    let data = new Promise((resolve, reject) => {
+      // query data
+      Product.find({
+        $and: [search, fabric, color, type]
+      }, {}, { // get range of data
+        skip: (currentPage - 1) * amountPerPage,
+        limit: amountPerPage
+      }, (err, data) => {
+
+        return resolve(data);
+      })
+    })
+
+    let payload = {
+      count: await count,
+      data: await data
+    }
+
+    return _.isEmpty(payload.data) ? res.status(404).json(msg.isEmpty(payload, null)) : res.status(200).json(msg.isSuccess(payload, null))
+  }
+
   // check page is number
   if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
 
@@ -50,25 +87,13 @@ router.get('/get/:search/:page/:fabric/:color/:type', (req, res) => {
     "category.type": req.params.type
   } : {});
 
-  // query
-  Product.find({
-    $and: [search, fabric, color, type]
-  }, {}, { // get range of data
-    skip: (currentPage - 1) * amountPerPage,
-    limit: amountPerPage
-  }, (err, data) => {
-    if (_.isEmpty(data)) { // check response is empty
-      return res.status(404).json(msg.isEmpty(data, err))
-    }
-    if (err) {
-      return res.status(400).json(msg.isfail(data, err))
-    } else {
-      return res.status(200).json(msg.isSuccess(data, err))
-    }
-  })
+  returnResponse(search, fabric, color, type);
 })
 
-// get category
+
+///
+// Get category
+///
 router.get('/category', async (req, res) => {
 
   async function returnResponse() {
@@ -103,7 +128,10 @@ router.get('/category', async (req, res) => {
 
 })
 
-// get popular product
+
+///
+// Get popular product
+///
 router.get('/popular', (req, res) => {
   // query get top 6 of product
   Product.find({}).sort({}).sort({
@@ -120,7 +148,19 @@ router.get('/popular', (req, res) => {
   })
 })
 
+///
+// Get num of product
+///
+router.get('/count', (req, res) => {
+  Product.find({}).count((err, data) => {
+    return data ? res.status(200).json(msg.isSuccess(data, err)) : res.status(404).json(msg.isEmpty(data, err))
+  })
+})
+
+
+///
 // Create product
+///
 router.post("/create", (req, res, next) => {
   Product.create(req.body, (err, data) => {
     if (err) console.log(err);
