@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import passport from "passport";
+import mongoSanitize from 'express-mongo-sanitize';
 import csrf from "csurf";
 // import _ from 'lodash';
 // import jwtDecode from 'jwt-decode';
@@ -95,10 +96,15 @@ app.use(
 // Init passport
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(mongoSanitize({
+  replaceWith: '_'
+}))
+
 
 // Init CSRF
 // app.use(csrf());
 // app.use(middlewareCSRF);
+
 
 // Declare MongoURI
 const mongoURI =
@@ -108,12 +114,14 @@ const mongoURI =
       }/sn-curtain` :
   `mongodb://${keys.MONGO_URI}/sn-curtain`;
 
+
 // Listen app with port 5000
 app.listen(5000, function () {
   console.log(
     "Express app listening on port 5000 [" + process.env.NODE_ENV + "]"
   );
 });
+
 
 // Connect to mongoDB
 const db = mongoose.connection;

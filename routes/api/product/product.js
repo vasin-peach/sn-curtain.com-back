@@ -30,106 +30,10 @@ router.get("/all", (req, res, next) => {
 })
 
 
-// get product by page
-router.get('/get/:search/:page', (req, res) => {
-
-  // check page is number
-  if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
-
-
-  // define filter
-  currentPage = (req.params.page ? req.params.page : currentPage);
-  search = req.params.search == " " ? "" : req.params.search;
-
-  // regix
-  var regex = new RegExp(".*" + search + ".*");
-
-  // query
-  Product.find({
-    "name": regex
-  }, {}, { // get range of data
-    skip: (currentPage - 1) * amountPerPage,
-    limit: amountPerPage
-  }, (err, data) => {
-    if (_.isEmpty(data)) { // check response is empty
-      return res.status(404).json(msg.isEmpty(data, err))
-    }
-    if (err) {
-      return res.status(400).json(msg.isfail(data, err))
-    } else {
-      return res.status(200).json(msg.isSuccess(data, err))
-    }
-  })
-})
-
-// get product by page, fabric
-router.get('/get/:page/:fabric/', (req, res) => {
-
-  // check page is number
-  if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
-
-  // define filter
-  currentPage = (req.params.page ? req.params.page : currentPage);
-  fabric = (req.params.fabric ? req.params.fabric : fabric);
-
-  // query
-  Product.find({
-    "category.fabric": fabric
-  }, {}, { // get range of data
-    skip: (currentPage - 1) * amountPerPage,
-    limit: amountPerPage
-  }, (err, data) => {
-    if (_.isEmpty(data)) { // check response is empty
-      return res.status(404).json(msg.isEmpty(data, err))
-    }
-    if (err) {
-      return res.status(400).json(msg.isfail(data, err))
-    } else {
-      return res.status(200).json(msg.isSuccess(data, err))
-    }
-  })
-})
-
-// get product by page, fabric, color
-router.get('/get/:page/:fabric/:color', (req, res) => {
-  console.log('test');
-  // check page is number
-  if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
-
-  // define filter
-  currentPage = (req.params.page ? req.params.page : currentPage);
-  fabric = (req.params.fabric ? req.params.fabric : fabric);
-  color = (req.params.color ? req.params.color : color);
-
-  // query
-  Product.find({
-    $and: [{
-        "category.fabric": fabric
-      },
-      {
-        "category.color.val": color
-      }
-    ]
-  }, {}, { // get range of data
-    skip: (currentPage - 1) * amountPerPage,
-    limit: amountPerPage
-  }, (err, data) => {
-    if (_.isEmpty(data)) { // check response is empty
-      return res.status(404).json(msg.isEmpty(data, err))
-    }
-    if (err) {
-      return res.status(400).json(msg.isfail(data, err))
-    } else {
-      return res.status(200).json(msg.isSuccess(data, err))
-    }
-  })
-})
-
 // get product by page, fabric, type, color
 router.get('/get/:search/:page/:fabric/:color/:type', (req, res) => {
   // check page is number
   if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
-
 
   // define filter
   currentPage = (req.params.page ? req.params.page : currentPage);
@@ -145,8 +49,6 @@ router.get('/get/:search/:page/:fabric/:color/:type', (req, res) => {
   type = (req.params.type && req.params.type != ' ' ? {
     "category.type": req.params.type
   } : {});
-
-  console.log([search, fabric, color, type])
 
   // query
   Product.find({
@@ -164,6 +66,41 @@ router.get('/get/:search/:page/:fabric/:color/:type', (req, res) => {
       return res.status(200).json(msg.isSuccess(data, err))
     }
   })
+})
+
+// get category
+router.get('/category', async (req, res) => {
+
+  async function returnResponse() {
+    let filter = []
+
+    let type = new Promise((resolve, reject) => {
+      Product.distinct("category.type", (err, data) => {
+        return _.isEmpty(data) ? reject(err) : resolve(data);
+      })
+    })
+    let color = new Promise((resolve, reject) => {
+      Product.distinct("category.color.val", (err, data) => {
+        return _.isEmpty(data) ? reject(err) : resolve(data);
+      })
+    })
+    let fabric = new Promise((resolve, reject) => {
+      Product.distinct("fabric", (err, data) => {
+        return _.isEmpty(data) ? reject(err) : resolve(data);
+      })
+    })
+
+    let result = {
+      "type": await type,
+      "color": await color,
+      "fabric": await fabric
+    }
+    return _.isEmpty(result) ? res.status(404).json(msg.isEmpty(result, null)) : res.status(200).json(msg.isSuccess(result, null))
+
+  }
+
+  returnResponse();
+
 })
 
 // get popular product
