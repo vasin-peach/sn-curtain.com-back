@@ -32,13 +32,14 @@ const productSchema = new Schema({
       type: String
     }
   },
-  assets: {
-    imgs: [{
-      src: {
-        type: String
-      }
-    }]
-  },
+  assets: [{
+    name: {
+      type: String
+    },
+    src: {
+      type: String
+    }
+  }],
   fabric: {
     type: String
   },

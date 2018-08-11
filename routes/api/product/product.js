@@ -31,6 +31,17 @@ router.get("/all", (req, res, next) => {
   })
 })
 
+///
+// Get product by id
+///
+router.get('/id/:id', (req, res) => {
+  Product.find({
+    _id: req.params.id
+  }, (err, data) => {
+    return _.isEmpty(data) ? res.status(404).json(msg.isEmpty(data, err)) : res.status(200).json(msg.isSuccess(data, err))
+  })
+})
+
 
 ///
 // Get product by page, fabric, type, color
