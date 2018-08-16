@@ -9,6 +9,7 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import mongoSanitize from 'express-mongo-sanitize';
+import cookieSession from 'cookie-session';
 import csrf from "csurf";
 // import _ from 'lodash';
 // import jwtDecode from 'jwt-decode';
@@ -39,33 +40,14 @@ if (process.env.NODE_ENV != "developing") {
   });
 }
 
-// // Allow CORS
-// app.all('/', (req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', keys.FRONTEND_URI)
-//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-//   res.Header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-//   // // Set to true if you need the website to include cookies in the requests sent
-//   // // to the API (e.g. in case you use sessions)
-//   // res.Header('Access-Control-Allow-Credentials', true);
-// })
-// var whitelist = [
-//   'https://sn-curtain.com',
-//   'http://sn-curtain.com',
-//   'https://www.sn-curtain.com',
-//   'http://www.sn-curtain.com',
-//   'https://dev.sn-curtain.com',
-//   'http://dev.sn-curtain.com'
-// ]
-// var corsOptions = {
-//   origin: function (origin, callback) {
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true)
-//     } else {
-//       callback(new Error('Not allow by CORS'))
-//     }
-//   },
-//   credentials: true
-// }
+///
+// Use Cookie session
+///
+app.use(cookieSession({
+  name: 'session',
+  keys: [keys.COOKIE_SECRET],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 // Use helmet for addional security
 app.use(helmet());

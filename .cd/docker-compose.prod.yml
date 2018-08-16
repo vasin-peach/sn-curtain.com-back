@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   sn-curtain.com-api-production:
@@ -21,10 +21,10 @@ services:
       - GOOGLE_CALLBACK_PROD=${GOOGLE_CALLBACK_PROD}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_SECRET_ID=${GOOGLE_SECRET_ID}
-      - FRONTEND_URI=${FRONTEND_URI_PROD}cle
+      - FRONTEND_URI=${FRONTEND_URI_PROD}
+      - COOKIE_SECRET=${COOKIE_SECRET_PROD}
     networks:
       - application-tier
 
 networks:
-  application-tier:
-
+  ? application-tier
