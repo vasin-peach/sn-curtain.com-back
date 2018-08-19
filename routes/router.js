@@ -19,6 +19,5 @@ router.get("/", function (req, res) {
 router.use('/csrf', CSRFRoute);
 router.use('/product', ProductRoute);
 router.use('/auth', AuthRoute);
-router.use('/basket', BasketRoute);
 
 module.exports = router;
