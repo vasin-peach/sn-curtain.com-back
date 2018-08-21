@@ -75,6 +75,17 @@ const productSchema = new Schema({
     body: String,
     date: Date
   }],
+  promotion: {
+    expired: {
+      expired: Boolean,
+      expiredStart: Date,
+      expiredEnd: Date,
+    },
+    discount: {
+      percent: Number,
+      amount: Number
+    }
+  }
 
 })
 

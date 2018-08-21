@@ -172,9 +172,9 @@ router.get('/count', (req, res) => {
 ///
 // Create product
 ///
-router.post("/create", (req, res, next) => {
+router.post("/create", (req, res, next) => { // *** don't forgot to add middleware admin when production
   Product.create(req.body, (err, data) => {
-    if (err) console.log(err);
+    if (err) return res.status(400).json(msg.isfail(data, err))
     else {
       return res.status(201).json({
         status: 201,

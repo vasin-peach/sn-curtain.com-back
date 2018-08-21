@@ -12,5 +12,7 @@ module.exports = {
   GOOGLE_CLIENT: '227591138588-tke4a564kmh04qdnml40uu1d4t87r5kh.apps.googleusercontent.com',
   GOOGLE_CALLBACK: 'http://127.0.0.1:5000/auth/google/callback',
   FRONTEND_URI: 'http://localhost:8080',
-  COOKIE_SECRET: 'SECRET'
+  COOKIE_SECRET: 'SECRET',
+  ENCRYPTION_SECRET_32: '50cjQFEluIcdaemQfa+hirBtDd3Np5cH9YrBTNMbJJU=',
+  ENCRYPTION_SECRET_64: '/TzZsOEREBaly3soVBZsgclJDFmwmgf+67ck4ZvWJkMw5NL0JiwEI/y26YIxCVUcjP1+6pmiGfv+VM9pUja98Q=='
 };
