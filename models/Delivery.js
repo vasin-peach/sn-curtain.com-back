@@ -7,10 +7,10 @@ const keys = require('../config/keys');
 
 // Schema
 const deliverySchema = new Schema({
-  name: {
+  text: {
     type: String
   },
-  charge: {
+  value: {
     type: Number
   }
 })
