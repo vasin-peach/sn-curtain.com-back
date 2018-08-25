@@ -5,7 +5,7 @@ const router = express.Router();
 const CSRFRoute = require('./api/csrf/csrf');
 const ProductRoute = require('./api/product/product');
 const DiscountRoute = require('./api/discount/discount');
-const AuthRoute = require("./api/auth");
+const AuthRoute = require("./api/auth/auth");
 const DeliveryRoute = require('./api/delivery/delivery');
 
 // Default route

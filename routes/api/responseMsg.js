@@ -38,5 +38,13 @@ module.exports = {
       err: err,
       data: data
     }
+  },
+  isExist: (data, err) => {
+    return {
+      status: 409,
+      message: 'already exist',
+      err: err,
+      data: data
+    }
   }
 }
