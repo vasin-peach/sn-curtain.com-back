@@ -14,6 +14,7 @@ import csrf from "csurf";
 // import _ from 'lodash';
 // import jwtDecode from 'jwt-decode';
 
+
 const app = express();
 const keys = require("./config/keys");
 const middlewareCSRF = require("./middleware/middlewareCSRF");
@@ -51,13 +52,10 @@ app.use(cookieSession({
 
 // Use helmet for addional security
 app.use(helmet());
-// Body Parser
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-);
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
 // Cors
 app.use(
   cors({
@@ -68,6 +66,8 @@ app.use(
 // cookie-parser
 app.use(cookieParser());
 
+
+// Init passport
 app.use(
   session({
     secret: keys.SESSION_SECRET,
@@ -75,7 +75,6 @@ app.use(
     saveUninitialized: true
   })
 );
-// Init passport
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(mongoSanitize({
@@ -137,9 +136,6 @@ mongoose.connect(
     auto_reconnect: true
   }
 );
-
-// Init body Parser
-app.use(bodyParser.json());
 
 // Include routes
 const routes = require("./routes/router");
