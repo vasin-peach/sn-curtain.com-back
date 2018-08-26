@@ -4,41 +4,42 @@ import CryptoJS from 'crypto-js';
 import keys from '../../../config/keys';
 import msg from '../responseMsg';
 import User from '../../../models/User';
-import LocalStrategy from 'passport-local';
 import _ from 'lodash';
+import {
+  doesNotReject
+} from 'assert';
 
 ///
 // Variable
 ///
 const router = express.Router();
+const FacebookStrategy = require('passport-facebook').Strategy;
 
 ///
 // Init passport
 ///
-passport.use(new LocalStrategy(
-  function (email, password, done) {
-    User.findOne({
-      email: email
-    }, (err, user) => {
-
-      // check user
-      if (err) return done(err);
-      if (!user) return done('user notfound', false);
-      // check password
-      const decryptPass = CryptoJS.AES.decrypt(user.password, keys.ENCRYPTION_SECRET_64).toString(CryptoJS.enc.Utf8);
-      if (password != decryptPass) return done('wrong password', false);
-
-      // true
-      return done(null, user)
-    })
-  }
-))
+passport.use(new FacebookStrategy({
+    clientID: keys.FACEBOOK_CLIENT,
+    clientSecret: keys.FACEBOOK_SECRET,
+    callbackURL: keys.FACEBOOK_CALLBACK
+  },
+  function (accessToken, refreshToken, profile, cb) {
+    done(null, profile);
+  }))
 
 
 
-// Local Login
-router.post("/login", passport.authenticate('local'), (req, res) => {
+// Facebook Login
+router.get("/login", passport.authenticate('facebook'), (req, res) => {
   res.status(200).json(msg.isSuccess('autenticate', null));
+})
+
+// Facebook callback
+router.get("/callback", (req, res) => {
+  passport.authenticate('facebook', {
+    successRedirect: '/auth/facebook/profile',
+    failureRedirect: '/'
+  })
 })
 
 // Local Profile
