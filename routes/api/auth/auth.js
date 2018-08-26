@@ -2,6 +2,7 @@ import express from 'express';
 import localRouter from './local';
 import facebookRouter from './facebook';
 import passport from 'passport';
+import keys from '../../../config/keys';
 import msg from '../responseMsg';
 
 ///
@@ -27,6 +28,11 @@ router.get("/", (req, res) => {
 })
 router.post("/", (req, res) => {
   return res.json(msg.isSuccess(null, 'Auth api.'));
+})
+// Facebook Logout
+router.get("/logout", (req, res) => {
+  req.logout();
+  res.redirect(keys.FRONTEND_URI + '/login');
 })
 
 

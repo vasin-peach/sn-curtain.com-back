@@ -17,8 +17,8 @@ const userSchema = new Schema({
   password: {
     type: String
   },
-  strategy: {
-    typr: String
+  provider: {
+    type: String
   },
   date: {
     type: Date,
