@@ -60,7 +60,7 @@ router.get("/login", passport.authenticate('google', {
 
 // Facebook callback
 router.get('/callback', passport.authenticate('google'), (req, res) => {
-  res.redirect(keys.FRONTEND_URI + '/login');
+  res.redirect(keys.FRONTEND_URI + '/profile');
 });
 
 module.exports = router;
