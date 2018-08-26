@@ -1,10 +1,10 @@
 import express from "express";
 import passport from "passport";
-import CryptoJS from "crypto-js";
 import keys from "../../../config/keys";
 import msg from "../responseMsg";
 import User from "../../../models/User";
 import LocalStrategy from "passport-local";
+import CryptoJS from "crypto-js";
 import _ from "lodash";
 
 ///
@@ -17,8 +17,10 @@ const router = express.Router();
 ///
 passport.use(
   new LocalStrategy(function (email, password, done) {
+
     User.findOne({
-        email: email.toLowerCase()
+        email: email.toLowerCase(),
+        provider: 'local'
       },
       (err, user) => {
         // check user

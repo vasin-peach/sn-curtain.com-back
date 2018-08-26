@@ -46,7 +46,7 @@ if (process.env.NODE_ENV != "developing") {
 ///
 app.use(cookieSession({
   name: 'session',
-  keys: [keys.COOKIE_SECRET],
+  keys: ['keys.COOKIE_SECRET'],
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
 
