@@ -20,6 +20,15 @@ const userSchema = new Schema({
   provider: {
     type: String
   },
+  gender: {
+    type: String
+  },
+  image: {
+    type: String
+  },
+  birthday: {
+    type: Date
+  },
   date: {
     type: Date,
     default: Date.now

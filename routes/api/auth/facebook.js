@@ -60,10 +60,4 @@ router.get('/callback', passport.authenticate('facebook'), (req, res) => {
   res.redirect(keys.FRONTEND_URI + '/login');
 });
 
-// Facebook Profile
-router.get("/profile", (req, res) => {
-  if (req.user) return res.status(200).json(msg.isSuccess(req.user, null));
-  else return res.status(404).json(msg.isEmpty(null, null));
-})
-
 module.exports = router;

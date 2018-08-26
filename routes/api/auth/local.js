@@ -43,12 +43,6 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
   res.status(200).json(msg.isSuccess("autenticate", null));
 });
 
-// Local Profile
-router.get("/profile", (req, res) => {
-  if (req.user) return res.status(200).json(msg.isSuccess(req.user, null));
-  else return res.status(404).json(msg.isEmpty(null, null));
-});
-
 // Local Register
 router.post("/register", (req, res) => {
   // check payload
