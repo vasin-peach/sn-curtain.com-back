@@ -36,7 +36,11 @@ passport.use(new FacebookStrategy({
         uid: profile.id,
         name: profile.displayName,
         email: profile.emails[0].value,
-        provider: 'facebook'
+        provider: 'facebook',
+        permission: {
+          name: 'customer',
+          value: 1
+        }
       }
       User.create(payload, (err, user) => {
         if (err) return done(err) // error

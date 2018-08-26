@@ -68,6 +68,10 @@ router.post("/register", (req, res) => {
       if (data) return res.status(409).json(msg.isExist(null, null));
 
       payload.email = payload.email.toLowerCase();
+      payload.permission = {
+        name: 'customer',
+        value: 1
+      }
 
       // create user
       User.create(payload, (err, data) => {

@@ -20,6 +20,10 @@ const userSchema = new Schema({
   provider: {
     type: String
   },
+  permission: {
+    name: String,
+    value: Number
+  },
   gender: {
     type: String
   },

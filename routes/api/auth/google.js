@@ -35,7 +35,11 @@ passport.use(new GoogleStrategy({
           uid: profile.id,
           name: profile.displayName,
           email: profile.emails[0].value,
-          provider: 'google'
+          provider: 'google',
+          permission: {
+            name: 'customer',
+            value: 1
+          }
         }
         User.create(payload, (err, user) => {
           if (err) return done(err) // error
