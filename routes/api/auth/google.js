@@ -33,13 +33,15 @@ passport.use(new GoogleStrategy({
       if (!user) { // create user
         var payload = {
           uid: profile.id,
-          name: profile.displayName,
+          name: profile._json.displayName,
           email: profile.emails[0].value,
           provider: 'google',
           permission: {
             name: 'customer',
             value: 1
-          }
+          },
+          photo: profile._json.image.url,
+          gender: profile._json.gender
         }
         User.create(payload, (err, user) => {
           if (err) return done(err) // error

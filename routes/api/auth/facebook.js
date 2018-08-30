@@ -40,7 +40,9 @@ passport.use(new FacebookStrategy({
         permission: {
           name: 'customer',
           value: 1
-        }
+        },
+        photo: profile._json.picture.data.url,
+        birthday: profile._json.birthday
       }
       User.create(payload, (err, user) => {
         if (err) return done(err) // error
