@@ -20,6 +20,9 @@ const userSchema = new Schema({
   provider: {
     type: String
   },
+  address: {
+    type: String
+  },
   permission: {
     name: String,
     value: Number
@@ -28,6 +31,9 @@ const userSchema = new Schema({
     type: String
   },
   photo: {
+    type: String
+  },
+  tel: {
     type: String
   },
   birthday: {
