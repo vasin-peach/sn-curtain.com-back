@@ -73,15 +73,20 @@ router.post('/profile/update', (req, res) => {
   }, (err, data) => {
     if (err) return res.status(400).json(msg.isfail(data, err))
     else {
-      console.log(data);
-      req.session.passport.user = data;
-      // req.session
-      return res.status(200).json({
-        status: 201,
-        message: 'Updated!',
-        err: err,
-        data: data,
+      User.find({
+        email: payload.email,
+        provider: payload.provider
+      }, (err, data) => {
+        if (err) return res.status(400).json(msg.isfail(data, err))
+        req.session.passport.user = data[0];
+        return res.status(200).json({
+          status: 201,
+          message: 'Updated!',
+          err: err,
+          data: data,
+        })
       })
+
     }
   })
 
