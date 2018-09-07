@@ -17,7 +17,7 @@ import csrf from "csurf";
 
 const app = express();
 const keys = require("./config/keys");
-const middlewareCSRF = require("./middleware/middlewareCSRF");
+const middleware = require('./middlewares');
 
 // Initialize Sentry.io
 if (process.env.NODE_ENV === "production") {
