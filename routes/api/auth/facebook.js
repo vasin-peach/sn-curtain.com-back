@@ -46,7 +46,7 @@ passport.use(new FacebookStrategy({
       }
       User.create(payload, (err, user) => {
         if (err) return done(err) // error
-        return done(null, profile);
+        return done(null, user);
       })
     } else return done(err, user); // return user profile
   })
