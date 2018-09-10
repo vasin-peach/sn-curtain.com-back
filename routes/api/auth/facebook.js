@@ -43,14 +43,14 @@ passport.use(new FacebookStrategy({
         },
         photo: profile._json.picture.data.url,
         birthday: profile._json.birthday
-      }
+      };
       User.create(payload, (err, user) => {
         if (err) return done(err) // error
         return done(null, user);
-      })
+      });
     } else return done(err, user); // return user profile
-  })
-}))
+  });
+}));
 
 
 
@@ -63,7 +63,7 @@ router.get("/login", passport.authenticate('facebook', {
 
 // Facebook callback
 router.get('/callback', passport.authenticate('facebook'), (req, res) => {
-  res.redirect(keys.FRONTEND_URI + '/profile');
+  res.redirect(req.cookies.redirect ? keys.FRONTEND_URI + req.cookies.redirect : keys.FRONTEND_URI + '/profile');
 });
 
 module.exports = router;
