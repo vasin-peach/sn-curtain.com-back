@@ -62,7 +62,7 @@ router.get("/login", passport.authenticate('google', {
 
 // Facebook callback
 router.get('/callback', passport.authenticate('google'), (req, res) => {
-  res.redirect(keys.FRONTEND_URI + '/profile');
+  res.redirect(req.cookies.redirect ? keys.FRONTEND_URI + req.cookies.redirect : keys.FRONTEND_URI + '/profile');
 });
 
 module.exports = router;
