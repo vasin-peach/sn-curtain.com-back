@@ -43,7 +43,7 @@ router.post("/", (req, res) => {
 // Logout
 router.get("/logout", (req, res) => {
   req.logout();
-  res.redirect(keys.FRONTEND_URI + '/login');
+  res.redirect(req.cookies.redirect ? keys.FRONTEND_URI + req.cookies.redirect : keys.FRONTEND_URI + '/login');
 })
 // Get User Profile
 router.get("/profile", (req, res) => {
