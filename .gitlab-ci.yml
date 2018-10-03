@@ -3,7 +3,6 @@ stages:
   - build
   - deploy
 
-
 # When using dind, it's wise to use the overlayfs driver for
 # improved performance.
 variables:
@@ -24,11 +23,12 @@ build-image:
     - docker:dind
   only:
     - master
+    - staging
   script:
     - "docker build --pull --no-cache -t $DOCKER_IMAGE_NAME ."
     - "docker push $DOCKER_IMAGE_NAME"
   after_script:
-   - "docker rmi $(docker images -qa -f 'dangling=true')"
+    - "docker rmi $(docker images -qa -f 'dangling=true')"
 
 # Deploy Development
 deploy-staging:
@@ -51,7 +51,7 @@ deploy-staging:
     name: staging
     url: "http://dev.api.sn-curtain.com"
   only:
-    - master
+    - staging
 
 # Deploy Production
 deploy-production:
@@ -75,4 +75,3 @@ deploy-production:
     url: "http://api.sn-curtain.com"
   only:
     - master
-  when: manual
