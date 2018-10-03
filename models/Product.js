@@ -40,25 +40,30 @@ const productSchema = new Schema({
       type: String
     }
   }],
-  fabric: {
-    type: String
-  },
   category: {
-    type: {
+    val: {
       type: String
     },
-    tag: [{
-      type: String
-    }],
-    color: {
+    type: {
       val: {
         type: String
       },
-      hex: {
-        type: String
-      }
+      nature: [{
+        val: {
+          type: String
+        },
+        text: {
+          type: String
+        },
+        option: {
+          type: String
+        }
+      }]
     }
   },
+  tag: [{
+    type: String
+  }],
   specs: [{
     name: {
       type: String
@@ -86,7 +91,6 @@ const productSchema = new Schema({
       amount: Number
     }
   }
-
 })
 
 module.exports = mongoose.model('Product', productSchema);

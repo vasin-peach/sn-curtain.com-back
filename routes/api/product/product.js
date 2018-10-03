@@ -110,41 +110,51 @@ router.get('/get/:search/:page/:category/:type/:nature', async (req, res) => {
 ///
 router.get('/category', async (req, res) => {
 
-  async function returnResponse() {
-    let filter = []
-
-    let type = new Promise((resolve, reject) => {
-      Product.distinct("category.type", (err, data) => {
-        return _.isEmpty(data) ? reject(err) : resolve(data);
-      })
-    })
-    let color = new Promise((resolve, reject) => {
-      Product.distinct("category.color.val", (err, data) => {
-        return _.isEmpty(data) ? reject(err) : resolve(data);
-      })
-    })
-    let fabric = new Promise((resolve, reject) => {
-      Product.distinct("fabric", (err, data) => {
-        return _.isEmpty(data) ? reject(err) : resolve(data);
-      })
-    })
-
-    let result = {
-      "type": await type,
-      "color": await color,
-      "fabric": await fabric
-    }
-    return _.isEmpty(result) ? res.status(404).json(msg.isEmpty(result, null)) : res.status(200).json(msg.isSuccess(result, null))
-
-  }
-
-  returnResponse().then((data) => {
-    console.log(data, "data");
-  }).catch((error) => {
-    console.log(error, "error");
+  let filter = [];
+  const category = await new Promise((resolve, reject) => {
+    Product.distinct("category.category", (err, data) => {
+      return _.isEmpty(data) ? reject(err) : resolve(data);
+    });
   });
 
-})
+  // const type = await new Promise((resolve, reject) => {
+  //   Product.distinct("category.")
+  // })
+
+  // async function returnResponse() {
+  //   let filter = []
+
+  //   let type = new Promise((resolve, reject) => {
+  //     Product.distinct("category.type", (err, data) => {
+  //       return _.isEmpty(data) ? reject(err) : resolve(data);
+  //     })
+  //   })
+  //   let color = new Promise((resolve, reject) => {
+  //     Product.distinct("category.color.val", (err, data) => {
+  //       return _.isEmpty(data) ? reject(err) : resolve(data);
+  //     })
+  //   })
+  //   let fabric = new Promise((resolve, reject) => {
+  //     Product.distinct("fabric", (err, data) => {
+  //       return _.isEmpty(data) ? reject(err) : resolve(data);
+  //     })
+  //   })
+
+  //   let result = {
+  //     "type": await type,
+  //     "color": await color,
+  //     "fabric": await fabric
+  //   }
+  //   return _.isEmpty(result) ? res.status(404).json(msg.isEmpty(result, null)) : res.status(200).json(msg.isSuccess(result, null))
+
+});
+
+// returnResponse().then((data) => {
+//   console.log(data, "data");
+// }).catch((error) => {
+//   console.log(error, "error");
+// });
+// })
 
 
 ///
