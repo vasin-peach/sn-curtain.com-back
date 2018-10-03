@@ -9,10 +9,10 @@ const Product = require('../../../models/Product');
 // Declare Variable
 var amountPerPage = 12;
 var currentPage = 1;
-var fabric = null
-var color = null
-var type = null
-var search = null
+var category = null;
+var nature = null;
+var type = null;
+var search = null;
 
 /*
   ROUTES
@@ -46,59 +46,62 @@ router.get('/id/:id', (req, res) => {
 ///
 // Get product by page, fabric, type, color
 ///
-router.get('/get/:search/:page/:fabric/:color/:type', async (req, res) => {
-
-  async function returnResponse(search, fabric, color, type) {
-
-    let count = new Promise((resolve, reject) => {
-      // query count item
-      Product.find({
-        $and: [search, fabric, color, type]
-      }).count((err, data) => {
-        return resolve(data);
-      })
-    })
-
-    let data = new Promise((resolve, reject) => {
-      // query data
-      Product.find({
-        $and: [search, fabric, color, type]
-      }, {}, { // get range of data
-        skip: (currentPage - 1) * amountPerPage,
-        limit: amountPerPage
-      }, (err, data) => {
-
-        return resolve(data);
-      })
-    })
-
-    let payload = {
-      count: await count,
-      data: await data
-    }
-
-    return _.isEmpty(payload.data) ? res.status(404).json(msg.isEmpty(payload, null)) : res.status(200).json(msg.isSuccess(payload, null))
-  }
-
-  // check page is number
-  if (isNaN(req.params.page)) return res.status(400).json(msg.isNumber());
+router.get('/get/:search/:page/:category/:type/:nature', async (req, res) => {
 
   // define filter
   currentPage = (req.params.page ? req.params.page : currentPage);
   search = (req.params.search && req.params.search != ' ' ? {
     "name": RegExp(req.params.search)
   } : {});
-  fabric = (req.params.fabric && req.params.fabric != ' ' ? {
-    "fabric": req.params.fabric
-  } : {});
-  color = (req.params.color && req.params.color != ' ' ? {
-    "category.color.val": req.params.color
+  category = (req.params.category && req.params.category != ' ' ? {
+    "category.category": req.params.category
   } : {});
   type = (req.params.type && req.params.type != ' ' ? {
     "category.type": req.params.type
   } : {});
+  nature = (req.params.nature && req.params.nature != ' ' ? {
+    "category.nature": req.params.nature
+  } : {});
 
-  returnResponse(search, fabric, color, type);
+
+
+  try {
+    // get count
+    const count = await new Promise((resolve, reject) => {
+      Product.find({
+        $and: [search, category, type, nature]
+      }).count((err, data) => {
+        if (err) return reject(err)
+        return resolve(data);
+      });
+    })
+
+    // get data
+    const data = await new Promise((resolve, reject) => {
+      Product.find({
+        $and: [search, category, type, nature]
+      }, {}, { // get range of data
+        skip: (currentPage - 1) * amountPerPage,
+        limit: amountPerPage
+      }, (err, data) => {
+        if (err) return reject(err);
+        return resolve(data);
+      });
+    })
+
+    // create payload
+    const payload = {
+      count: await count,
+      data: await data
+    }
+
+    // return response
+    if (_.isEmpty(payload.data)) return res.status(404).json(msg.isEmpty(null, payload));
+    else return res.status(200).json(msg.isSuccess(payload, null));
+
+  } catch (e) {
+    return res.status(404).json(msg.isEmpty(null, e));
+  }
 })
 
 
@@ -135,7 +138,11 @@ router.get('/category', async (req, res) => {
 
   }
 
-  returnResponse();
+  returnResponse().then((data) => {
+    console.log(data, "data");
+  }).catch((error) => {
+    console.log(error, "error");
+  });
 
 })
 
