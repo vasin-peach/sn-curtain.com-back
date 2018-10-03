@@ -110,12 +110,17 @@ router.get('/get/:search/:page/:category/:type/:nature', async (req, res) => {
 ///
 router.get('/category', async (req, res) => {
 
-  let filter = [];
-  const category = await new Promise((resolve, reject) => {
-    Product.distinct("category.category", (err, data) => {
+  const response = await new Promise((resolve, reject) => {
+    Product.distinct("category", (err, data) => {
       return _.isEmpty(data) ? reject(err) : resolve(data);
     });
   });
+
+  // return response
+  if (_.isEmpty(response)) return res.status(404).json(msg.isEmpty(null, null));
+  else return res.status(200).json(msg.isSuccess(response, null));
+
+
 
   // const type = await new Promise((resolve, reject) => {
   //   Product.distinct("category.")
