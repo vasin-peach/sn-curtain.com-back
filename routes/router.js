@@ -8,6 +8,7 @@ const ProductRoute = require('./api/product/product');
 const DiscountRoute = require('./api/discount/discount');
 const AuthRoute = require("./api/auth/auth");
 const DeliveryRoute = require('./api/delivery/delivery');
+const GeneratorRoute = require('./api/generator/generator');
 
 
 // Default route
@@ -24,5 +25,6 @@ router.use('/product', ProductRoute);
 router.use('/discount', DiscountRoute);
 router.use('/delivery', DeliveryRoute);
 router.use('/auth', AuthRoute);
+router.use('/generator', GeneratorRoute);
 
 module.exports = router;
