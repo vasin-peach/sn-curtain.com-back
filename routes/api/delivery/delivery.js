@@ -15,7 +15,8 @@ const Delivery = require('../../../models/Delivery');
 // get all delivery
 router.get('/', (req, res) => {
   Delivery.find({}, (err, data) => {
-    return err ? res.status(400).json(msg.isfail(data, err)) : res.status(200).json(msg.isSuccess(data, err))
+    if (err) return res.status(400).json(msg.isfail(data, err));
+    else res.status(200).json(msg.isSuccess(data, err));
   })
 })
 
