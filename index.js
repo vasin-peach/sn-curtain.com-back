@@ -11,6 +11,7 @@ import passport from "passport";
 import mongoSanitize from 'express-mongo-sanitize';
 import cookieSession from 'cookie-session';
 import csrf from "csurf";
+import middlewareCSRF from './middleware/middlewareCSRF';
 // import _ from 'lodash';
 // import jwtDecode from 'jwt-decode';
 
@@ -83,8 +84,8 @@ app.use(mongoSanitize({
 
 
 // Init CSRF
-// app.use(csrf());
-// app.use(middlewareCSRF);
+app.use(csrf());
+app.use(middlewareCSRF);
 
 
 // Declare MongoURI

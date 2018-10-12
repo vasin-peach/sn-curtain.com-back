@@ -6,6 +6,7 @@ module.exports = (err, req, res, next) => {
     status: 403,
     message: 'Forbidden',
     error: 'Invalid CSRF',
+    headers: req.headers,
     data: null
   });
 }

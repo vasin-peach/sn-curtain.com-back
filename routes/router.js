@@ -10,6 +10,7 @@ const AuthRoute = require("./api/auth/auth");
 const DeliveryRoute = require('./api/delivery/delivery');
 const GeneratorRoute = require('./api/generator/generator');
 const PaymentRoute = require('./api/payment/main');
+const BasketRoute = require('./api/basket/basket');
 
 
 // Default route
@@ -28,5 +29,6 @@ router.use('/delivery', DeliveryRoute);
 router.use('/auth', AuthRoute);
 router.use('/generator', GeneratorRoute);
 router.use('/payment', PaymentRoute);
+router.use('/basket', BasketRoute);
 
 module.exports = router;
