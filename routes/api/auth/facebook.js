@@ -34,7 +34,9 @@ passport.use(new FacebookStrategy({
     if (!user) { // create user
       var payload = {
         uid: profile.id,
-        name: profile.displayName,
+        name: {
+          display_name: profile.displayName,
+        },
         email: profile.emails[0].value,
         provider: 'facebook',
         permission: {

@@ -8,6 +8,10 @@ const msg = require('../responseMsg');
 */
 
 router.get('/', (req, res) => {
+  res.status(200).json(msg.isSuccess('CSRF Api, Healty.', null));
+})
+
+router.get('/get', (req, res) => {
   res.status(200).json(msg.isSuccess(req.csrfToken()));
 })
 
