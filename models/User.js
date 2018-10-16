@@ -9,6 +9,9 @@ const userSchema = new Schema({
     type: String
   },
   name: {
+    display_name: {
+      type: String
+    },
     first_name: {
       type: String
     },
