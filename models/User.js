@@ -9,15 +9,9 @@ const userSchema = new Schema({
     type: String
   },
   name: {
-    display_name: {
-      type: String
-    },
-    first_name: {
-      type: String
-    },
-    last_name: {
-      type: String
-    }
+    display_name: String,
+    first_name: String,
+    last_name: String
   },
   email: {
     type: String,
@@ -29,27 +23,13 @@ const userSchema = new Schema({
     type: String
   },
   address: {
-    house_no: {
-      type: String
-    },
-    village_no: {
-      type: String
-    },
-    amphoe: {
-      type: String
-    },
-    district: {
-      type: String
-    },
-    road: {
-      type: String
-    },
-    province: {
-      type: String
-    },
-    zip: {
-      type: String
-    },
+    house_no: String,
+    village_no: String,
+    amphoe: String,
+    district: String,
+    road: String,
+    province: String,
+    zip: String
   },
   permission: {
     name: String,

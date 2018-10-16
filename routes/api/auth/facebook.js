@@ -35,7 +35,7 @@ passport.use(new FacebookStrategy({
       var payload = {
         uid: profile.id,
         name: {
-          display_name: profile.name.displayName,
+          display_name: profile.displayName,
         },
         email: profile.emails[0].value,
         provider: 'facebook',
