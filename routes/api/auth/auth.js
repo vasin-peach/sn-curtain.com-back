@@ -89,10 +89,31 @@ router.post('/profile/update', (req, res) => {
 
     }
   })
-
-
 })
-// Delete User Profile
+
+// Update User Address
+router.post('/profile/address/update', (req, res) => {
+
+  // declear payload, user
+  const payload = {
+    address: req.body
+  };
+  const user_id = req.session.passport.user._id;
+
+  // check payload is not empty & user must found in session
+  if (_.isEmpty(payload)) return res.status(400).json(msg.badRequest(null, 'payload empty.'));
+  if (!user_id) return res.status(400).json(msg.badRequest(null, 'user is empty.'));
+
+  // update user address
+  User.findOneAndUpdate({
+    _id: user_id
+  }, payload, {
+    upsert: true
+  }, (err, data) => {
+    if (err) return res.status(400).json(msg.isfail(data, err));
+    console.log(data);
+  })
+})
 
 
 router.use('/local', localRouter);
