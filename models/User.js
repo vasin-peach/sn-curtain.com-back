@@ -9,7 +9,9 @@ const userSchema = new Schema({
     type: String
   },
   name: {
-    type: String
+    display_name: String,
+    first_name: String,
+    last_name: String
   },
   email: {
     type: String,
@@ -21,7 +23,13 @@ const userSchema = new Schema({
     type: String
   },
   address: {
-    type: String
+    house_no: String,
+    village_no: String,
+    amphoe: String,
+    district: String,
+    road: String,
+    province: String,
+    zip: String
   },
   permission: {
     name: String,
