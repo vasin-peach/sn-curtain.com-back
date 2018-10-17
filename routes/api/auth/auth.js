@@ -110,10 +110,13 @@ router.post('/profile/address/update', (req, res) => {
   }, payload, {
     upsert: true
   }, (err, data) => {
+    // check update is error
     if (err) return res.status(400).json(msg.isfail(data, err));
-    console.log(data);
-  })
-})
+
+    // return update data
+    return res.status(200).json(msg.isSuccess(data, null));
+  });
+});
 
 
 router.use('/local', localRouter);
