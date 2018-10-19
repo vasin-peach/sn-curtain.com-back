@@ -104,7 +104,7 @@ router.post('/profile/address/update', (req, res) => {
   if (_.isEmpty(payload)) return res.status(400).json(msg.badRequest(null, 'payload empty.'));
   if (!user_id) return res.status(400).json(msg.badRequest(null, 'user is empty.'));
 
-  // update user address
+  // update user address in database
   User.findOneAndUpdate({
     _id: user_id
   }, payload, {
@@ -116,6 +116,9 @@ router.post('/profile/address/update', (req, res) => {
     // return update data
     return res.status(200).json(msg.isSuccess(data, null));
   });
+
+  // update user address in session
+  req.session.passport.user.address = req.body;
 });
 
 
