@@ -22,9 +22,10 @@ router.get("/", (req, res) => {
 router.post("/charge", (req, res) => {
 
   // declear list of payload
+  const email = req.body.email;
   const product = JSON.parse(req.body.product);
-  const discountCode = JSON.parse(req.body.discount);
-  const delivery = JSON.parse(req.body.delivery);
+  const discountCode = JSON.parse(req.body.discount || 0);
+  const delivery = JSON.parse(req.body.delivery || 0);
   const card = req.body.card;
   const card_token = req.body.card_token
 
@@ -38,10 +39,10 @@ router.post("/charge", (req, res) => {
     return sum + item.buyOption * item.amount;
   }, 0);
 
-  // Get Description
+  // Create Description
   var description = product.reduce((sum, item) => {
-    console.log(item);
-  });
+    return sum + item.data.name + " (" + item.buyOption + "฿)[" + item.amount + "]. "
+  }, email);
 
 
   // Get Discount
@@ -90,7 +91,7 @@ router.post("/charge", (req, res) => {
 
       // create charges
       Omise.charges.create({
-        description: 'John Doe (id: 30)',
+        description: description,
         amount: productPrice,
         currency: 'thb',
         capture: true,
@@ -101,8 +102,6 @@ router.post("/charge", (req, res) => {
       }, error => {
         return res.status(400).json(msg.isfail(null, error));
       });
-
-
     });
   }
 });
