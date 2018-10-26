@@ -46,5 +46,13 @@ module.exports = {
       err: err,
       data: data
     }
+  },
+  isCreated: (data, err) => {
+    return {
+      status: 401,
+      message: 'created success.',
+      err: err,
+      data: data
+    }
   }
 }
