@@ -4,18 +4,36 @@ const {
 } = mongoose;
 
 const orderSchema = new Schema({
-  order_name: String,
-  order_description: String,
+  order_name: {
+    type: String,
+    required: true
+  },
+  order_description: {
+    type: String,
+    required: true
+  },
   product: [{
-    product_id: String,
-    amount: Number,
-    data: Object
+    product_id: {
+      type: String,
+      required: true
+    },
+    amount: {
+      type: Number,
+      required: true
+    },
+    data: {
+      type: Object,
+      required: true
+    }
   }],
   pricing: {
     product_price: Number,
     discount_price: Number,
     delivery_price: Number,
-    summary_price: Number
+    summary_price: {
+      type: Number,
+      required: true
+    }
   },
   discount: {
     discount_code: String,
@@ -24,19 +42,44 @@ const orderSchema = new Schema({
     discount_percent: Number,
   },
   delivery: {
-    delivery_type: String,
-    delivery_amount: Number,
-    delivery_description: Number,
-    delivery_status: String,
+    delivery_type: {
+      type: String,
+      required: true
+    },
+    delivery_amount: {
+      type: Number,
+      required: true
+    },
+    delivery_status: {
+      type: String,
+      required: true
+    },
+    delivery_description: Number
   },
   payment: {
-    payment_type: String,
-    payment_evidence: String,
-    customer_name: String,
+    payment_type: {
+      type: String,
+      required: true
+    },
+    payment_evidence: {},
+    customer_name: {
+      type: String,
+      required: true
+    },
   },
-  order_status: String,
-  created_at: new Date(),
-  updated_at: new Date()
-})
+  user_id: {
+    type: String,
+    required: true
+  },
+  order_status: {
+    type: String,
+    required: true
+  },
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  }
+});
 
 module.exports = mongoose.model('Order', orderSchema);
