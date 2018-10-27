@@ -31,6 +31,7 @@ router.post("/charge", (req, res) => {
   const delivery = JSON.parse(req.body.delivery || 0);
   const card = req.body.card;
   const card_token = req.body.card_token;
+  const payment = req.body.payment;
 
   // declear list of price
   var discountPrice = 0;
@@ -145,14 +146,21 @@ router.post("/charge", (req, res) => {
           const delivery_new = {
             delivery_type: 0,
             delivery_amount: delivery,
-            delivery_status: 'กำลังดำเนินการ'
+            delivery_status: 'กำลังดำเนินการ',
+            delivery_description: payment.house_no + " " +
+              payment.village_no + " " +
+              payment.amphoe + " " +
+              payment.district + " " +
+              payment.road + " " +
+              payment.province + " " +
+              payment.zip + " "
           }
 
           // create payment format
           const payment_new = {
             payment_type: 'credit',
             payment_evidence: customer.transaction,
-            customer_name: req.session.passport.user.name.display_name
+            customer_name: payment.first_name + " " + payment.last_name
           }
 
           // declear payload to order
@@ -165,11 +173,9 @@ router.post("/charge", (req, res) => {
             delivery: delivery_new,
             payment: payment_new,
             user_id: req.session.passport.user._id || null,
-            tel: req.session.passport.user.tel || null,
+            tel: payment.tel,
             order_status: 'ชำระเงิน'
           }
-
-          console.log(payload);
 
           // create order
           createOrder(payload);

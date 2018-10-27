@@ -58,7 +58,10 @@ const orderSchema = new Schema({
       type: String,
       required: true
     },
-    delivery_description: Number
+    delivery_description: {
+      type: String,
+      required: true
+    }
   },
   payment: {
     payment_type: {
