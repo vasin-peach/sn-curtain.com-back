@@ -136,10 +136,10 @@ router.post("/charge", (req, res) => {
 
           // create discount format
           const discount_new = {
-            discount_code: discountCode,
-            discount_type: discountType,
+            discount_code: discountCode || null,
+            discount_type: discountType || null,
             discount_percent: discountPercent || null,
-            discount_amount: discountPrice
+            discount_amount: discountPrice || null
           }
 
           // create delivery format
@@ -176,6 +176,8 @@ router.post("/charge", (req, res) => {
             tel: payment.tel,
             order_status: 'ชำระเงิน'
           }
+
+          console.log(payload);
 
           // create order
           createOrder(payload);
