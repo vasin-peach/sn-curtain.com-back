@@ -102,7 +102,7 @@ router.post("/charge", (req, res) => {
 
       // Sum price
       productPrice = productPrice + deliveryPrice - discountPrice;
-      productPrice = productPrice <= 0 ? 0 : productPrice;
+      productPrice = productPrice <= 0 ? 20 : productPrice;
       productPrice = String(productPrice) + "00";
 
       // create charges
@@ -176,8 +176,6 @@ router.post("/charge", (req, res) => {
             tel: payment.tel,
             order_status: 'ชำระเงิน'
           }
-
-          console.log(payload);
 
           // create order
           createOrder(payload);
