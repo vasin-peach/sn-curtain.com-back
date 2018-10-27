@@ -4,6 +4,7 @@ const msg = require("../responseMsg");
 const CryptoJS = require("crypto-js");
 const keys = require("../../../config/keys");
 const Discount = require("../../../models/Discount");
+const Delivery = require("../../../models/Delivery");
 const moment = require("moment");
 const Omise = require("omise")({
   secretKey: "skey_test_5diatzuu1tsmcften6a",
@@ -12,6 +13,10 @@ const Omise = require("omise")({
 
 // Declear Varaible
 const router = express.Router();
+
+import {
+  createOrder
+} from './order';
 
 // Route
 router.get("/", (req, res) => {
@@ -35,6 +40,9 @@ router.post("/charge", (req, res) => {
   var productPrice = product.reduce((sum, item) => {
     return sum + item.buyOption * item.amount;
   }, 0);
+
+  // Duplicate productPrice
+  const productPrice_temp = productPrice
 
   // Create Description
   var description = product.reduce((sum, item) => {
@@ -80,10 +88,13 @@ router.post("/charge", (req, res) => {
       if (!_.isEmpty(exist)) {
         // get amount from discount type
         if (exist[0].discount.percent) {
+          var discountType = 'percent'
+          var discountPercent = exist[0].discount.percent;
           discountPrice = Math.floor(
             (exist[0].discount.percent * parseFloat(productPrice)) / 100
           );
         } else if (exist[0].discount.amount) {
+          var discountType = 'amount'
           discountPrice = Math.floor(exist[0].discount.amount);
         }
       }
@@ -94,16 +105,75 @@ router.post("/charge", (req, res) => {
       productPrice = String(productPrice) + "00";
 
       // create charges
-      Omise.charges.create(
-        {
+      Omise.charges.create({
           description: description,
           amount: productPrice,
           currency: "thb",
           capture: true,
           card: card_token
         },
-        function(error, customer) {
+        function (error, customer) {
           if (error) return res.status(400).json(msg.isfail(null, error));
+
+          // change product format
+          const product_new = product.map(item => {
+            return {
+              product_id: item.data._id,
+              amount: item.amount,
+              option: item.buyOption,
+              data: item.data
+            }
+          });
+
+          // create pricing format
+          const pricing_new = {
+            product_price: productPrice_temp,
+            discount_price: discountPrice,
+            delivery_price: deliveryPrice,
+            summary_price: productPrice
+          }
+
+          // create discount format
+          const discount_new = {
+            discount_code: discountCode,
+            discount_type: discountType,
+            discount_percent: discountPercent || null,
+            discount_amount: discountPrice
+          }
+
+          // create delivery format
+          const delivery_new = {
+            delivery_type: 0,
+            delivery_amount: delivery,
+            delivery_status: 'กำลังดำเนินการ'
+          }
+
+          // create payment format
+          const payment_new = {
+            payment_type: 'credit',
+            payment_evidence: customer.transaction,
+            customer_name: req.session.passport.user.name.display_name
+          }
+
+          // declear payload to order
+          const payload = {
+            order_name: email,
+            order_description: description,
+            product: product_new,
+            pricing: pricing_new,
+            discount: discount_new,
+            delivery: delivery_new,
+            payment: payment_new,
+            user_id: req.session.passport.user._id || null,
+            tel: req.session.passport.user.tel || null,
+            order_status: 'ชำระเงิน'
+          }
+
+          console.log(payload);
+
+          // create order
+          createOrder(payload);
+
           return res.status(200).json(msg.isSuccess(customer, null));
         },
         error => {

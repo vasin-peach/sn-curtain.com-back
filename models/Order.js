@@ -21,6 +21,10 @@ const orderSchema = new Schema({
       type: Number,
       required: true
     },
+    option: {
+      type: String,
+      required: true
+    },
     data: {
       type: Object,
       required: true
@@ -70,6 +74,9 @@ const orderSchema = new Schema({
   user_id: {
     type: String,
     required: true
+  },
+  tel: {
+    type: String,
   },
   order_status: {
     type: String,
