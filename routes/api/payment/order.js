@@ -5,11 +5,11 @@ const Order = {
   async createOrder(data) {
 
     try {
-      const response = OrderModel.create(data);
-      console.log(response);
+      const response = await OrderModel.create(data);
+      return Promise.resolve(response);
 
     } catch (error) {
-      console.log(error);
+      return Promise.reject(error);
     }
 
   }
