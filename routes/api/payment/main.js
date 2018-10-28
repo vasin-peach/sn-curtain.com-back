@@ -178,10 +178,10 @@ router.post("/charge", (req, res) => {
           }
 
           // create order
-          createOrder(payload).then(() => {
-            return res.status(200).json(msg.isSuccess(customer, null));
-          }, () => {
-            return res.status(200).json(msg.isSuccess("can't create order.", null));
+          createOrder(payload).then((response) => {
+            return res.status(200).json(msg.isSuccess(response, null));
+          }, (error) => {
+            return res.status(200).json(msg.isSuccess("can't create order.", error));
           })
 
         },
