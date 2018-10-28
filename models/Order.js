@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const autoIncrement = require('mongoose-auto-increment');
+
 const {
   Schema
 } = mongoose;
@@ -78,6 +80,10 @@ const orderSchema = new Schema({
     type: String,
     required: true
   },
+  bill_id: {
+    type: String,
+    required: true
+  },
   tel: {
     type: String,
   },
@@ -91,5 +97,7 @@ const orderSchema = new Schema({
     updatedAt: 'updated_at'
   }
 });
+
+orderSchema.plugin(autoIncrement.plugin, 'Order');
 
 module.exports = mongoose.model('Order', orderSchema);
