@@ -80,10 +80,6 @@ const orderSchema = new Schema({
     type: String,
     required: true
   },
-  bill_id: {
-    type: String,
-    required: true
-  },
   tel: {
     type: String,
   },
