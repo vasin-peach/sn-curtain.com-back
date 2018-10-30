@@ -94,6 +94,9 @@ const orderSchema = new Schema({
   }
 });
 
-orderSchema.plugin(autoIncrement.plugin, 'Order');
+orderSchema.plugin(autoIncrement.plugin, {
+  model: 'Order',
+  startAt: 100
+});
 
 module.exports = mongoose.model('Order', orderSchema);
