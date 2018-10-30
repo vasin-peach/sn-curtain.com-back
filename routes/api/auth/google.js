@@ -33,7 +33,9 @@ passport.use(new GoogleStrategy({
       if (!user) { // create user
         var payload = {
           uid: profile.id,
-          name: profile._json.displayName,
+          name: {
+            display_name: profile._json.displayName,
+          },
           email: profile.emails[0].value,
           provider: 'google',
           permission: {
