@@ -13,10 +13,10 @@ router.get("/", (req, res) => { // Get User Order
   let user = req.session.passport.user;
 
   // notfound user data in session --> 401
-  if (_.isEmpty(user)) return res.status(401).json(msg.badRequest(null, 'Unauthorized.'));
+  if (isEmpty(user)) return res.status(401).json(msg.badRequest(null, 'Unauthorized.'));
 
   Order.find({ // find order by user id
-    user_id: user.id
+    user_id: user._id
   }, (err, data) => {
 
     // if query return error
@@ -58,10 +58,10 @@ router.post("/", (req, res) => { // Create User Order
   let payload = req.body;
 
   // not found user data in session --> 401
-  if (_.isEmpty(user)) return res.status(401).json(msg.badRequest(null, 'Unauthorized.'));
+  if (isEmpty(user)) return res.status(401).json(msg.badRequest(null, 'Unauthorized.'));
 
   // not found payload --> 400
-  if (_.isEmpty(payload)) return res.status(400).json(msg.isEmpty(null, 'Payload is empty.'));
+  if (isEmpty(payload)) return res.status(400).json(msg.isEmpty(null, 'Payload is empty.'));
 
   Order.create(payload, (err, data) => { // query create 
 
