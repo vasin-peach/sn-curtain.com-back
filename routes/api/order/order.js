@@ -1,6 +1,6 @@
 const express = require("express");
 const msg = require("../responseMsg");
-const isEmpty = require('lodash/isempty');
+const isEmpty = require('lodash.isempty');
 const router = express.Router();
 
 // Import Schema
