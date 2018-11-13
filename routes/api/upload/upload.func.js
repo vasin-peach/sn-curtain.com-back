@@ -19,6 +19,7 @@ if (process.env.NODE_ENV == 'developing') {
 } else {
   var storage = new Storage({
     projectId: 'sn-curtain-1532605297836',
+    keyFilename: 'config/google.key.json'
   });
 }
 
