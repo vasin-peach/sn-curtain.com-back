@@ -13,6 +13,7 @@ import cookieSession from 'cookie-session';
 import csrf from "csurf";
 import middlewareCSRF from './middleware/middlewareCSRF';
 import autoIncrement from 'mongoose-auto-increment'
+import fileUpload from 'express-fileupload';
 // import _ from 'lodash';
 // import jwtDecode from 'jwt-decode';
 
@@ -35,6 +36,7 @@ if (process.env.NODE_ENV != "developing") {
   // Raven for sentry
   app.use(Raven.requestHandler());
   app.use(Raven.errorHandler());
+
   app.use(function onError(err, req, res, next) {
     // The error id is attached to `res.sentry` to be returned
     // and optionally displayed to the user for support.
@@ -83,10 +85,16 @@ app.use(mongoSanitize({
   replaceWith: '_'
 }))
 
-
 // Init CSRF
 app.use(csrf());
 app.use(middlewareCSRF);
+
+// File Upload
+app.use(fileUpload({
+  limits: {
+    fileSize: 1024 * 1024
+  }
+}));
 
 
 // Declare MongoURI
