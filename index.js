@@ -58,9 +58,16 @@ app.use(cookieSession({
 // Use helmet for addional security
 app.use(helmet());
 app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded({
   extended: true
 }))
+// File Upload
+app.use(fileUpload({
+  limits: {
+    fileSize: 1024 * 1024
+  }
+}));
 // Cors
 app.use(
   cors({
@@ -90,12 +97,6 @@ app.use(mongoSanitize({
 app.use(csrf());
 app.use(middlewareCSRF);
 
-// File Upload
-app.use(fileUpload({
-  limits: {
-    fileSize: 1024 * 1024
-  }
-}));
 
 
 // Declare MongoURI
