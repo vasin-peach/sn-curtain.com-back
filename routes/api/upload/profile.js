@@ -4,6 +4,11 @@ import msg from "../responseMsg";
 
 // * Import Model
 import User from "../../../models/User";
+import {
+  getListBuckets,
+  createBucket,
+  uploadImage
+} from './upload.func';
 
 // * Declear Variable
 const router = express.Router();
@@ -14,7 +19,7 @@ const router = express.Router();
 
 // ? Default
 router.get("/", (req, res) => {
-  return res.json(msg.isSuccess("upload api", null));
+  return res.json(msg.isSuccess("upload profile api", null));
 });
 
 // ? Upload Profile Image
@@ -41,6 +46,57 @@ router.post("/", (req, res) => {
 
 
   // ! UPLOAD
+
+  async function uploadProfile(imageData) {
+
+    /**
+     * @param imageData fileData from frontend
+     */
+
+    // check imageData
+    if (!imageData || isEmpty(imageData)) return res.status(404).json(msg.isEmpty('', 'imageData is empty'));
+
+    // * get list of buckets
+    let listBuckets = await getListBuckets().then(buckets => {
+      return buckets.map(bucket => bucket.name);
+    });
+
+    // create bucket if 'sn-curtain-profile' is empty
+    if (listBuckets.indexOf('sn-curtain-profile') < 0) {
+
+      // * create bucket
+      const name = 'sn-curtain-profile';
+      const option = {
+        location: 'ASIA',
+        storageClass: 'COLDLINE'
+      }
+      await createBucket(name, option);
+
+    }
+
+    // * upload image
+    const bucketName = 'sn-curtain-profile';
+    const filename = imageData;
+    const option = {
+      gzip: true,
+      metadata: {
+        contentType: imageData.mimetype
+        // cacheControl: 'public, max-age=31536000',
+      }
+    }
+
+    uploadImage(bucketName, filename, option).then(result => {
+      console.log(result)
+    }, err => {
+      console.log(err);
+    })
+
+
+  }
+
+  // call function upload
+  uploadProfile(req.files.image);
+
   res.send(req.files);
 
 

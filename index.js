@@ -16,6 +16,7 @@ import autoIncrement from 'mongoose-auto-increment'
 import fileUpload from 'express-fileupload';
 // import _ from 'lodash';
 // import jwtDecode from 'jwt-decode';
+// require("dotenv-json")();
 
 
 const app = express();
