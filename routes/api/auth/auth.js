@@ -28,7 +28,6 @@ passport.deserializeUser(function (user, done) {
 });
 
 
-
 ///
 // Route
 ///
@@ -45,11 +44,13 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.redirect(req.cookies.redirect ? keys.FRONTEND_URI + req.cookies.redirect : keys.FRONTEND_URI + '/login');
 })
+
 // Get User Profile
 router.get("/profile", (req, res) => {
   if (req.user) return res.status(200).json(msg.isSuccess(req.user, null));
   else return res.status(404).json(msg.isEmpty(null, null));
 });
+
 // Update User Profile
 router.post('/profile/update', (req, res) => {
   const payload = req.body
@@ -89,7 +90,41 @@ router.post('/profile/update', (req, res) => {
 
     }
   })
+});
+
+// Upload User Image Profile
+router.get('/profile/image', (req, res) => {
+  // Imports the Google Cloud client library
+  const {
+    Storage
+  } = require('@google-cloud/storage');
+
+  // Your Google Cloud Platform project ID
+  const projectId = 'sn-curtain-1532605297836';
+
+  // Creates a client
+  const storage = new Storage({
+    projectId: projectId,
+  });
+
+  // The name for the new bucket
+  const bucketName = 'sn-curtain-test';
+
+  // Creates the new bucket
+  storage
+    .createBucket(bucketName)
+    .then(() => {
+      console.log(`Bucket ${bucketName} created.`);
+      return res.status(200).json('success');
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+      return res.status(400).json({
+        err: err
+      });
+    });
 })
+
 
 // Update User Address
 router.post('/profile/address/update', (req, res) => {

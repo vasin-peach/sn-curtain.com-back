@@ -12,6 +12,7 @@ const GeneratorRoute = require('./api/generator/generator');
 const PaymentRoute = require('./api/payment/main');
 const BasketRoute = require('./api/basket/basket');
 const OrderRoute = require('./api/order/order');
+const UploadRoute = require('./api/upload/upload');
 
 
 // Default route
@@ -32,5 +33,6 @@ router.use('/generator', GeneratorRoute);
 router.use('/payment', PaymentRoute);
 router.use('/basket', BasketRoute);
 router.use('/order', OrderRoute);
+router.use('/upload', UploadRoute);
 
 module.exports = router;
