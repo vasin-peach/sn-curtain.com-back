@@ -71,7 +71,7 @@ const uploadFunction = {
 
 
 
-  async uploadImage(bucketName, filename, option) {
+  async uploadImage(bucketName, filename, option, userData) {
 
     /**
      * @param bucketName name of bucket
@@ -84,12 +84,13 @@ const uploadFunction = {
      *    // (If the contents will change, use cacheControl: 'no-cache')
      *    cacheControl: STRING - 'public, max-age=31536000',
      *  }
-     * } 
+     * }
+     * @param userData data from session
      */
 
     return new Promise((resolve, reject) => {
 
-      const gcsname = Date.now() + "-" + filename.name;
+      const gcsname = 'profile-' + userData.passport.user.email + '-' + Date.now();
       const file = storage.bucket(bucketName).file(gcsname);
       const stream = file.createWriteStream(option)
 
@@ -97,7 +98,7 @@ const uploadFunction = {
 
       stream.on('finish', () => { // when finish
         file.makePublic();
-        const publicUrl = getPublicUrl(bucketName, filename.name);
+        const publicUrl = getPublicUrl(bucketName, gcsname);
         return resolve(publicUrl);
       });
 
