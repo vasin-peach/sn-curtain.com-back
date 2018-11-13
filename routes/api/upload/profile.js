@@ -7,7 +7,8 @@ import passport from "passport";
 import {
   getListBuckets,
   createBucket,
-  uploadImage
+  uploadImage,
+  deleteImage
 } from "./upload.func";
 import {
   updateProfile
@@ -120,8 +121,16 @@ router.post("/", async (req, res) => {
     // ! call
     const updateProfileResult = await updateProfile(updateProfileObject);
 
+    // * delete old image
+
+    let oldImageName = req.session.passport.user.photo.split('/');
+    oldImageName = oldImageName[oldImageName.length - 1];
+
+    // ! call
+    const deleteImageResult = await deleteImage(bucketName, oldImageName);
+
     // * callback
-    return [uploadImageResult, updateProfileResult];
+    return [uploadImageResult, updateProfileResult, deleteImageResult];
   }
 
   // * call function uploadprofile
@@ -133,6 +142,7 @@ router.post("/", async (req, res) => {
 
   res.send(req.files);
 });
+
 
 //
 // ─── EXPORT ─────────────────────────────────────────────────────────────────────

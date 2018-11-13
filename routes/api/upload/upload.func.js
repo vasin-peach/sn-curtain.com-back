@@ -110,6 +110,24 @@ const uploadFunction = {
 
   },
 
+  async deleteImage(bucketname, filename) {
+
+    /**
+     * @param bucketname name of bucket
+     * @param filename name of image
+     */
+
+
+    if (!bucketname || !filename) return Promise.reject('param is empty');
+
+    try {
+      const deleteImageResult = await storage.bucket(bucketname).file(filename).delete();
+      return Promise.resolve(deleteImageResult);
+    } catch (err) {
+      return Promise.resolve(false);
+    }
+  }
+
 }
 
 module.exports = uploadFunction
