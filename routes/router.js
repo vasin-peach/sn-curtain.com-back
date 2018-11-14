@@ -13,6 +13,7 @@ const PaymentRoute = require('./api/payment/main');
 const BasketRoute = require('./api/basket/basket');
 const OrderRoute = require('./api/order/order');
 const UploadRoute = require('./api/upload/upload');
+const WeightRoute = require('./api/weight/weight');
 
 
 // Default route
@@ -34,5 +35,6 @@ router.use('/payment', PaymentRoute);
 router.use('/basket', BasketRoute);
 router.use('/order', OrderRoute);
 router.use('/upload', UploadRoute);
+router.use('/weight', WeightRoute);
 
 module.exports = router;
