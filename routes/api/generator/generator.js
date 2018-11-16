@@ -64,11 +64,13 @@ router.post("/product", (req, res, next) => {
     }]
 
     // price
+    var optionList = ['100x250', '125x250', '150x250', '175x250', '200x250', '225x250', '250x250']
     var price = []
     for (let item = 0; item < 4; item++) {
       price.push({
-        text: "ตัวเลือก" + item,
-        value: Math.floor((Math.random() * 1000) + 1)
+        text: optionList[Math.floor(Math.random() * optionList.length)],
+        value: Math.floor((Math.random() * 1000) + 1),
+        weight: Math.floor((Math.random() * 10000) + 1)
       })
     }
 
@@ -114,11 +116,13 @@ router.post("/product", (req, res, next) => {
       nature.push(natureList[x])
     }
 
+    const typeList = ['ม่านตาไก่', 'ม่านจีบ', 'ม่านพับ', 'ม่านคอกระเช้า', 'ม่านหลุย', 'ม่านมู่ลี่', 'ม่านม้วน', 'ม่านกั้นแอร์', 'ม่านลอน', 'วอลล์เปเปอร์', 'มุ้งลวด-มุ้งจีบ', 'อุปกรณ์ม่าน'];
+    const categoryList = ["ผ้าม่าน", "ราง", "วอลล์เปเปอร์", "อุปกรณ์"]
 
     let category = {
-      val: "ประเภท" + Math.floor((Math.random() * 5) + 1),
+      val: categoryList[Math.floor(Math.random() * categoryList.length)],
       type: {
-        val: "ชนิด" + Math.floor((Math.random() * 5) + 1),
+        val: typeList[Math.floor(Math.random() * typeList.length)],
         nature: nature
       }
     }
