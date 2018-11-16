@@ -69,7 +69,7 @@ router.post("/product", (req, res, next) => {
       price.push({
         text: "ตัวเลือก" + item,
         value: Math.floor((Math.random() * 1000) + 1),
-        weight: Math.floor((Math.random() * 100) + 1)
+        weight: Math.floor((Math.random() * 10000) + 1)
       })
     }
 
