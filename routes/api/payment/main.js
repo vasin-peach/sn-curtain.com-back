@@ -101,7 +101,7 @@ router.post("/charge", (req, res) => {
       }
 
       // Sum price
-      productPrice = productPrice + deliveryPrice - discountPrice;
+      productPrice = (productPrice - discountPrice) + deliveryPrice;
       productPrice = productPrice <= 0 ? 20 : productPrice;
       productPrice = String(productPrice) + "00";
 
