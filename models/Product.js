@@ -24,6 +24,9 @@ const productSchema = new Schema({
     },
     option: {
       type: String
+    },
+    weight: {
+      type: Number
     }
   }],
   quantity: {
