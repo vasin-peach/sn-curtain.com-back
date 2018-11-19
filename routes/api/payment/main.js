@@ -146,7 +146,7 @@ router.post("/charge", (req, res) => {
           const delivery_new = {
             delivery_type: 0,
             delivery_amount: delivery,
-            delivery_status: 'กำลังดำเนินการ',
+            delivery_status: 'progress',
             delivery_description: payment.house_no + " " +
               payment.village_no + " " +
               payment.amphoe + " " +
@@ -174,7 +174,7 @@ router.post("/charge", (req, res) => {
             payment: payment_new,
             user_id: req.session.passport.user._id || null,
             tel: payment.tel,
-            order_status: 'ชำระเงิน'
+            order_status: 'paid'
           }
 
           // create order
