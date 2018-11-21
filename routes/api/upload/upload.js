@@ -7,6 +7,7 @@ import User from "../../../models/User";
 
 // * Import Router
 import uploadProfileRouter from "./profile";
+import uploadAtmRouter from './atm';
 
 // * Declear Variable
 const router = express.Router();
@@ -25,5 +26,6 @@ router.get("/", (req, res) => {
 //
 
 router.use("/profile", uploadProfileRouter);
+router.use("/atm", uploadAtmRouter);
 
 module.exports = router
