@@ -64,6 +64,9 @@ const billSchema = new Schema({
   bill_status: {
     type: String,
     required: true
+  },
+  bill_image: {
+    type: String,
   }
 }, {
   timestamps: {

@@ -8,8 +8,14 @@ import msg from "../responseMsg";
 
 // * Import Model
 import {
-  createBucket
+  getListBuckets,
+  createBucket,
+  uploadImage
 } from './upload.func';
+
+import {
+  updateModel
+} from '../model.func';
 
 // * Declear Varaible
 const router = express.Router();
@@ -39,13 +45,13 @@ router.post("/", async (req, res) => {
 
   // ! UPLOAD
 
-  req.send(req.files);
 
-  async function uploadPayment(imageData, userData, req) {
+  async function uploadAtm(imageData, userData, req, objectId) {
     /**
      * @param imageData fileData from frontend
      * @param userData data from passport session in req
      * @param req request from router
+     * @param objectId useful to find or update item
      */
 
     // * check imageData
@@ -61,17 +67,16 @@ router.post("/", async (req, res) => {
       return buckets.map(bucket => bucket.name);
     });
 
-    // create bucket if 'sn-curtain-profile' is empty
-    if (listBuckets.indexOf("sn-curtain-profile") < 0) {
 
-      // create bucket
+    // * create bucket if 'sn-curtain-payment' is empty
+    if (listBuckets.indexOf("sn-curtain-payment") < 0) {
+
+      // * create bucket
       const name = "sn-curtain-payment";
       const option = {
         location: "ASIA",
         storageClass: "COLDLINE"
       };
-
-      // ! call
       await createBucket(name, option);
 
     }
@@ -86,28 +91,40 @@ router.post("/", async (req, res) => {
         // cacheControl: 'public, max-age=31536000',
       }
     };
-
-    // ! call
     const uploadImageResult = await uploadImage(
       bucketName,
       filename,
       option,
-      userData
+      userData,
+      objectId
     );
 
+
     // * update payment order
-    const updateProfileObject = {
+    const updateOrderObject = {
       query: {
-        _id: userData.passport.user._id
+        _id: objectId
       },
       data: {
-        photo: uploadImageResult
+        order_image: uploadImageResult,
+        order_status: 'wait_confirm'
       },
       option: {
         new: true
-      }
+      },
+      document: 'Order'
     }
+
+    const updateModelResult = await updateModel(updateOrderObject);
+
+    return [uploadImageResult, updateModelResult];
+
   }
+
+  // ! Call
+  const uploadAtmResult = await uploadAtm(req.files.image, req.session, req, req.body.objectId).then(result => result);
+
+  res.status(201).json(msg.isCreated(uploadAtmResult, null));
 });
 
 //

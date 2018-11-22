@@ -81,7 +81,7 @@ router.post("/", async (req, res) => {
   if (isEmpty(user)) return res.status(401).json(msg.badRequest(null, 'Unauthorized.'));
 
   // not found payload --> 400
-  if (isEmpty(payload)) return res.status(400).json(msg.isEmpty(null, 'Payload is empty.'));
+  if (isEmpty(payload) || !payload.product) return res.status(400).json(msg.isEmpty(null, 'Payload is empty.'));
 
   // *
   // * ─── DECLEAR ────────────────────────────────────────────────────────────────────
@@ -220,7 +220,7 @@ router.post("/", async (req, res) => {
     delivery_type: 0,
     delivery_amount: delivery,
     delivery_status: 'progress',
-    delivery_description: payment.house_no + " " +
+    delivery_description: (payment.house_no || "") + " " +
       payment.village_no + " " +
       payment.amphoe + " " +
       payment.district + " " +

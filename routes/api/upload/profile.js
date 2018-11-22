@@ -1,7 +1,6 @@
 import express from "express";
 import isEmpty from "lodash.isempty";
 import msg from "../responseMsg";
-import passport from "passport";
 
 // * Import Model
 import {

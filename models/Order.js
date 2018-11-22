@@ -85,6 +85,9 @@ const orderSchema = new Schema({
     type: String,
     required: true
   },
+  order_image: {
+    typr: String
+  }
 }, {
   timestamps: {
     createdAt: 'created_at',
