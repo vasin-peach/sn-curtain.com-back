@@ -1,3 +1,7 @@
+//
+// ─── IMPORT ─────────────────────────────────────────────────────────────────────
+//
+
 import express from "express";
 import isEmpty from "lodash.isempty";
 import msg from "../responseMsg";
@@ -6,15 +10,16 @@ import msg from "../responseMsg";
 import {
   getListBuckets,
   createBucket,
-  uploadImage,
-  deleteImage
-} from "./upload.func";
-import {
-  updateProfile
-} from "../auth/profile.func";
+  uploadImage
+} from './upload.func';
 
-// * Declear Variable
+import {
+  updateModel
+} from '../model.func';
+
+// * Declear Varaible
 const router = express.Router();
+
 
 //
 // ─── ROUTER ─────────────────────────────────────────────────────────────────────
@@ -22,11 +27,12 @@ const router = express.Router();
 
 // ? Default
 router.get("/", (req, res) => {
-  return res.json(msg.isSuccess("upload profile api", null));
+  return res.json(msg.isSuccess("upload atm api", null));
 });
 
-// ? Upload Profile Image
+// ? Upload Payment Image
 router.post("/", async (req, res) => {
+
   /**
    * @param req.files image upload data
    */
@@ -37,31 +43,22 @@ router.post("/", async (req, res) => {
   if (isEmpty(req.files) || !req.files)
     return res.status(404).json(msg.isEmpty("", "payload is empty."));
 
-  // check image type
-  const type = ["image/gif", "image/jpeg", "image/png"].indexOf(
-    req.files.image.mimetype
-  );
-  if (type < 0)
-    return res.status(400).json(msg.isfail("", "wrong image type."));
-
-  // check image size
-  if (req.files.image.truncated)
-    return res.status(400).json(msg.isfail("", "wrong image size."));
-
   // ! UPLOAD
 
-  async function uploadProfile(imageData, userData, req) {
+
+  async function uploadAtm(imageData, userData, req, objectId) {
     /**
      * @param imageData fileData from frontend
      * @param userData data from passport session in req
      * @param req request from router
+     * @param objectId useful to find or update item
      */
 
-    // check imageData
+    // * check imageData
     if (!imageData || isEmpty(imageData))
       return res.status(404).json(msg.isEmpty("", "imageData is empty"));
 
-    // check UserData
+    // * check UserData
     if (!userData || !userData.passport || isEmpty(userData.passport))
       return res.status(404).json(msg.isEmpty("", "UserData is empty"));
 
@@ -70,23 +67,22 @@ router.post("/", async (req, res) => {
       return buckets.map(bucket => bucket.name);
     });
 
-    // create bucket if 'sn-curtain-profile' is empty
-    if (listBuckets.indexOf("sn-curtain-profile") < 0) {
+
+    // * create bucket if 'sn-curtain-payment' is empty
+    if (listBuckets.indexOf("sn-curtain-payment") < 0) {
 
       // * create bucket
-      const name = "sn-curtain-profile";
+      const name = "sn-curtain-payment";
       const option = {
         location: "ASIA",
         storageClass: "COLDLINE"
       };
-
-      // ! call
       await createBucket(name, option);
 
     }
 
-    // * upload profile image
-    const bucketName = "sn-curtain-profile";
+    // * upload payment image
+    const bucketName = 'sn-curtain-payment';
     const filename = imageData;
     const option = {
       gzip: true,
@@ -95,53 +91,41 @@ router.post("/", async (req, res) => {
         // cacheControl: 'public, max-age=31536000',
       }
     };
-
-    // ! call
     const uploadImageResult = await uploadImage(
       bucketName,
       filename,
       option,
-      userData
+      userData,
+      objectId
     );
 
-    // * update profile data
-    const updateProfileObject = {
+
+    // * update payment order
+    const updateOrderObject = {
       query: {
-        _id: userData.passport.user._id
+        _id: objectId
       },
       data: {
-        photo: uploadImageResult
+        order_image: uploadImageResult,
+        order_status: 'wait_confirm'
       },
       option: {
         new: true
-      }
-    };
+      },
+      document: 'Order'
+    }
 
-    // ! call
-    const updateProfileResult = await updateProfile(updateProfileObject);
+    const updateModelResult = await updateModel(updateOrderObject);
 
-    // * delete old image
+    return [uploadImageResult, updateModelResult];
 
-    let oldImageName = req.session.passport.user.photo.split('/');
-    oldImageName = oldImageName[oldImageName.length - 1];
-
-    // ! call
-    const deleteImageResult = await deleteImage(bucketName, oldImageName);
-
-    // * callback
-    return [uploadImageResult, updateProfileResult, deleteImageResult];
   }
 
-  // * call function uploadprofile
-  let uploadProfileResult = await uploadProfile(req.files.image, req.session, req).then(result => {
-    return result;
-  });
+  // ! Call
+  const uploadAtmResult = await uploadAtm(req.files.image, req.session, req, req.body.objectId).then(result => result);
 
-  req.session.passport.user.photo = uploadProfileResult[0];
-
-  res.send(req.files);
+  res.status(201).json(msg.isCreated(uploadAtmResult, null));
 });
-
 
 //
 // ─── EXPORT ─────────────────────────────────────────────────────────────────────

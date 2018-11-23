@@ -72,7 +72,7 @@ const uploadFunction = {
 
 
 
-  async uploadImage(bucketName, filename, option, userData) {
+  async uploadImage(bucketName, filename, option, userData, objectId) {
 
     /**
      * @param bucketName name of bucket
@@ -87,11 +87,12 @@ const uploadFunction = {
      *  }
      * }
      * @param userData data from session
+     * @param objectId STRING - id of item to use
      */
 
     return new Promise((resolve, reject) => {
 
-      const gcsname = 'profile-' + userData.passport.user.email + '-' + Date.now();
+      const gcsname = userData.passport.user.email + '-' + (objectId || "") + "-" + Date.now();
       const file = storage.bucket(bucketName).file(gcsname);
       const stream = file.createWriteStream(option)
 

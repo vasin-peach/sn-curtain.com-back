@@ -68,12 +68,10 @@ const orderSchema = new Schema({
   payment: {
     payment_type: {
       type: String,
-      required: true
     },
     payment_evidence: {},
     customer_name: {
       type: String,
-      required: true
     },
   },
   user_id: {
@@ -87,6 +85,9 @@ const orderSchema = new Schema({
     type: String,
     required: true
   },
+  order_image: {
+    typr: String
+  }
 }, {
   timestamps: {
     createdAt: 'created_at',
