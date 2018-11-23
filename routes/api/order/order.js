@@ -28,7 +28,7 @@ router.get("/", (req, res) => {
   let user = req.session.passport.user;
 
   // notfound user data in session --> 401
-  if (isEmpty(user)) return res.status(401).json(msg.badRequest(null, 'Unauthorized.'));
+  if (!user || !user._id || isEmpty(user)) return res.status(401).json(msg.badRequest(null, 'Unauthorized.'));
 
   Order.find({ // find order by user id
     user_id: user._id
@@ -248,37 +248,55 @@ router.post("/", async (req, res) => {
     return res.status(200).json(msg.isSuccess(response, null));
   }, (error) => {
     return res.status(400).json(msg.isFail("can't create order.", error));
-  })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Order.create(payload, (err, data) => { // query create 
-
-  //   // error
-  //   if (err) return res.status(400).json(msg.badRequest(data, err));
-
-  //   // success
-  //   return res.status(201).json(msg.isCreated(data, err));
-
-  // });
+  });
 });
+
+
+// ? delete order
+router.post("/delete", async (req, res) => {
+
+
+  // *
+  // * ─── DECLEAR ────────────────────────────────────────────────────────────────────
+  // *
+
+  let delete_id = req.body.delete_id;
+  let delete_user = req.session.passport.user._id;
+
+
+  // *
+  // * ─── VALIDATE ───────────────────────────────────────────────────────────────────
+  // *
+
+  // validate param
+  if (!delete_id) return res.status(400).json(msg.badRequest(null, 'bad request, `req.body.id` is invalid.'));
+  if (!delete_user) return res.status(400).json(msg.unAuth(null, 'unauthorized, `req.session.passport.user` is invalid.'));
+
+
+  // validate user is owner order
+  await Order.findOne({
+    _id: delete_id
+  }, (error, result) => {
+    if (error) return res.status(400).json(msg.isFail(null, error));
+    if (!result.user_id) return res.status(404).json(msg.isEmpty(null, 'order not found'));
+    if (result.user_id != delete_user) return res.status(400).json(msg.unAuth(null, 'you are not owner this order.'));
+  });
+
+  // *
+  // * ─── DELETE ─────────────────────────────────────────────────────────────────────
+  // *
+
+  // delete order
+  await Order.findOneAndRemove({
+    $and: [{
+      _id: delete_id
+    }, {
+      user_id: delete_user
+    }]
+  }, (error, result) => {
+    if (error) return res.status(400).json(msg.isFail(null, error));
+    else return res.status(200).json(msg.isSuccess(result, null));
+  });
+}); // // delete order block end
 
 module.exports = router;

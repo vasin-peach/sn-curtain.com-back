@@ -1,10 +1,18 @@
 module.exports = {
-  badRequest: () => {
+  badRequest: (data = null, err = null) => {
     return {
       status: 400,
-      message: 'failed',
-      err: 'the request is invalid.',
-      data: null
+      message: 'the request is invalid.',
+      err: err,
+      data: data
+    }
+  },
+  unAuth: (data = null, err = null) => {
+    return {
+      status: 400,
+      message: 'bad request, not auth.',
+      err: err,
+      data: data
     }
   },
   isNumber: (data = null, err = null) => {
