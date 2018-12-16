@@ -2,7 +2,21 @@ import express from "express";
 import isEmpty from "lodash.isempty";
 import msg from "../responseMsg";
 
-// * Import Model
+//
+// ─── INIT NAME OF BUCKET ────────────────────────────────────────────────
+//
+
+if (process.env.NODE_ENV == 'production') {
+  var bucketEnv = 'prod'
+} else {
+  var bucketEnv = 'dev'
+}
+
+
+//
+// ─── IMPORT MODEL ───────────────────────────────────────────────────────────────
+//
+
 import {
   getListBuckets,
   createBucket,
@@ -71,10 +85,10 @@ router.post("/", async (req, res) => {
     });
 
     // create bucket if 'sn-curtain-profile' is empty
-    if (listBuckets.indexOf("sn-curtain-profile") < 0) {
+    if (listBuckets.indexOf(`sn-curtain-${bucketEnv}-profile`) < 0) {
 
       // * create bucket
-      const name = "sn-curtain-profile";
+      const name = `sn-curtain-${bucketEnv}-profile`;
       const option = {
         location: "ASIA",
         storageClass: "COLDLINE"
@@ -86,7 +100,7 @@ router.post("/", async (req, res) => {
     }
 
     // * upload profile image
-    const bucketName = "sn-curtain-profile";
+    const bucketName = `sn-curtain-${bucketEnv}-profile`;
     const filename = imageData;
     const option = {
       gzip: true,
