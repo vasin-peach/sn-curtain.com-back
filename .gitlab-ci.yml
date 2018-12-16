@@ -65,6 +65,7 @@ deploy-production:
     - "pip install docker-compose"
     - "docker-compose version"
     - echo "${GOOGLE_APPLICATION_CREDENTIALS_PROD}" > "./config/gcp.key.json"
+    - echo "$(ls)"
   script:
     - "docker-compose -f .cd/docker-compose.prod.yml pull"
     - "docker-compose -f .cd/docker-compose.prod.yml stop"
