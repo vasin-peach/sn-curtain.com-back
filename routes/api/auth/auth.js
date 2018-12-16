@@ -15,6 +15,9 @@ import User from '../../../models/User';
 import localRouter from './local';
 import facebookRouter from './facebook';
 import googleRouter from './google';
+import {
+  checkPermission
+} from './auth.func';
 
 ///
 // Variable

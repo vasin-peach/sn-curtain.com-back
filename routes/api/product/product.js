@@ -5,6 +5,9 @@ const msg = require("../responseMsg");
 
 // Import Model
 const Product = require("../../../models/Product");
+import {
+  authPermission
+} from '../auth/auth.func';
 
 // Declare Variable
 var amountPerPage = 12;
@@ -35,14 +38,13 @@ router.get("/all", (req, res, next) => {
 // Get product by id
 ///
 router.get("/id/:id", (req, res) => {
-  Product.find(
-    {
+  Product.find({
       _id: req.params.id
     },
     (err, data) => {
-      return _.isEmpty(data)
-        ? res.status(404).json(msg.isEmpty(data, err))
-        : res.status(200).json(msg.isSuccess(data, err));
+      return _.isEmpty(data) ?
+        res.status(404).json(msg.isEmpty(data, err)) :
+        res.status(200).json(msg.isSuccess(data, err));
     }
   );
 });
@@ -54,29 +56,21 @@ router.get("/get/:search/:page/:category/:type/:nature", async (req, res) => {
   // define filter
   currentPage = req.params.page ? req.params.page : currentPage;
   search =
-    req.params.search && req.params.search != " "
-      ? {
-          name: RegExp(req.params.search)
-        }
-      : {};
+    req.params.search && req.params.search != " " ? {
+      name: RegExp(req.params.search)
+    } : {};
   category =
-    req.params.category && req.params.category != " "
-      ? {
-          "category.val": req.params.category
-        }
-      : {};
+    req.params.category && req.params.category != " " ? {
+      "category.val": req.params.category
+    } : {};
   type =
-    req.params.type && req.params.type != " "
-      ? {
-          "category.type.val": req.params.type
-        }
-      : {};
+    req.params.type && req.params.type != " " ? {
+      "category.type.val": req.params.type
+    } : {};
   nature =
-    req.params.nature && req.params.nature != " "
-      ? {
-          "category.type.nature.val": req.params.nature
-        }
-      : {};
+    req.params.nature && req.params.nature != " " ? {
+      "category.type.nature.val": req.params.nature
+    } : {};
 
   try {
     // get count
@@ -91,12 +85,9 @@ router.get("/get/:search/:page/:category/:type/:nature", async (req, res) => {
 
     // get data
     const data = await new Promise((resolve, reject) => {
-      Product.find(
-        {
+      Product.find({
           $and: [search, category, type, nature]
-        },
-        {},
-        {
+        }, {}, {
           // get range of data
           skip: (currentPage - 1) * amountPerPage,
           limit: amountPerPage
@@ -137,43 +128,7 @@ router.get("/category", async (req, res) => {
   if (_.isEmpty(response)) return res.status(404).json(msg.isEmpty(null, null));
   else return res.status(200).json(msg.isSuccess(response, null));
 
-  // const type = await new Promise((resolve, reject) => {
-  //   Product.distinct("category.")
-  // })
-
-  // async function returnResponse() {
-  //   let filter = []
-
-  //   let type = new Promise((resolve, reject) => {
-  //     Product.distinct("category.type", (err, data) => {
-  //       return _.isEmpty(data) ? reject(err) : resolve(data);
-  //     })
-  //   })
-  //   let color = new Promise((resolve, reject) => {
-  //     Product.distinct("category.color.val", (err, data) => {
-  //       return _.isEmpty(data) ? reject(err) : resolve(data);
-  //     })
-  //   })
-  //   let fabric = new Promise((resolve, reject) => {
-  //     Product.distinct("fabric", (err, data) => {
-  //       return _.isEmpty(data) ? reject(err) : resolve(data);
-  //     })
-  //   })
-
-  //   let result = {
-  //     "type": await type,
-  //     "color": await color,
-  //     "fabric": await fabric
-  //   }
-  //   return _.isEmpty(result) ? res.status(404).json(msg.isEmpty(result, null)) : res.status(200).json(msg.isSuccess(result, null))
 });
-
-// returnResponse().then((data) => {
-//   console.log(data, "data");
-// }).catch((error) => {
-//   console.log(error, "error");
-// });
-// })
 
 ///
 // Get popular product
@@ -204,16 +159,22 @@ router.get("/popular", (req, res) => {
 ///
 router.get("/count", (req, res) => {
   Product.find({}).count((err, data) => {
-    return data
-      ? res.status(200).json(msg.isSuccess(data, err))
-      : res.status(404).json(msg.isEmpty(data, err));
+    return data ?
+      res.status(200).json(msg.isSuccess(data, err)) :
+      res.status(404).json(msg.isEmpty(data, err));
   });
 });
 
 ///
 // Create product
 ///
-router.post("/create", (req, res, next) => {
+router.post("/create", async (req, res, next) => {
+
+  // ! Validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+
   // *** don't forgot to add middleware admin when production
   Product.create(req.body, (err, data) => {
     if (err) return res.status(400).json(msg.isfail(data, err));

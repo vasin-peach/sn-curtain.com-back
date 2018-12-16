@@ -7,6 +7,14 @@ module.exports = {
       data: data
     }
   },
+  unAccess: (data = null, err = null) => {
+    return {
+      status: 403,
+      message: 'forbidden, invalid access level.',
+      err: err,
+      data: data
+    }
+  },
   unAuth: (data = null, err = null) => {
     return {
       status: 400,
@@ -57,7 +65,7 @@ module.exports = {
   },
   isCreated: (data, err) => {
     return {
-      status: 401,
+      status: 301,
       message: 'created success.',
       err: err,
       data: data

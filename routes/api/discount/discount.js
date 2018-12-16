@@ -8,6 +8,9 @@ const moment = require('moment');
 
 // Import Model
 const Discount = require('../../../models/Discount');
+import {
+  authPermission
+} from '../auth/auth.func';
 
 ///--
 // ROUTES
@@ -15,6 +18,7 @@ const Discount = require('../../../models/Discount');
 
 // find discount code
 router.get("/id/:code", (req, res) => {
+
   var code = req.params.code;
   var discountList = [];
   Discount.find({}, (err, data) => {
@@ -51,14 +55,27 @@ router.get("/id/:code", (req, res) => {
 
 
 // get all
-router.get("/all", (req, res) => { // *** only admin
+router.get("/all", async (req, res) => { // *** only admin
+
+  // ! Validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+
   Discount.find({}, (err, data) => {
     return err ? res.status(400).json(msg.isfail(data, err)) : res.status(200).json(msg.isSuccess(data, err))
   });
 });
 
 // create
-router.post("/create", (req, res) => { // *** don't forgot to add middleware admin when production
+router.post("/create", async (req, res) => { // *** don't forgot to add middleware admin when production
+
+  // ! Validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+
+
   // check payload is not empty
   if (_.isEmpty(req.body.payload)) return res.status(400).json(msg.badRequest('bad param, payload is empty.'));
   if (!req.body.payload.code) return res.status(400).json(msg.badRequest('bad param, payload code is empty.'));
