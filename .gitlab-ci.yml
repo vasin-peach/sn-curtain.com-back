@@ -41,6 +41,7 @@ deploy-staging:
     - "pip install docker-compose"
     - "docker-compose version"
     - echo "${GOOGLE_APPLICATION_CREDENTIALS_STAG}" > "./config/gcp.key.json"
+    - echo "$(ls)"
   script:
     - "docker-compose -f .cd/docker-compose.staging.yml pull"
     - "docker-compose -f .cd/docker-compose.staging.yml stop"
