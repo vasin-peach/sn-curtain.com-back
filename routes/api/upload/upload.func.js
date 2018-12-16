@@ -14,12 +14,17 @@ import isEmpty from 'lodash.isempty';
 if (process.env.NODE_ENV == 'production') {
   var storage = new Storage({
     projectId: 'sn-curtain-prod',
-    // keyFilename: 'config/google.key.prod.json'
+    keyFilename: 'config/gcp.key.prod.json'
+  });
+} else if (process.env.NODE_ENV == 'staging') {
+  var storage = new Storage({
+    projectId: 'sn-curtain-storage-dev',
+    keyFilename: 'config/gcp.key.stag.json'
   });
 } else {
   var storage = new Storage({
-    projectId: 'neural-passkey-225609',
-    // keyFilename: 'config/google.key.dev.json'
+    projectId: 'sn-curtain-storage-dev',
+    keyFilename: 'config/gcp.key.dev.json'
   });
 }
 
