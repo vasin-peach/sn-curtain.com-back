@@ -26,14 +26,16 @@ router.get("/id/:code", (req, res) => {
         discount: data.discount,
         expired: data.expired,
         infinity: data.infinity,
-        quantity: data.quantity
+        quantity: data.quantity,
+        owner: data.owner
       });
     });
 
     // check code is exist
+    var checkUser = req.session.passport.user.email
     var exist = discountList.filter((data) => {
-      var checkExpired = moment().isBetween(data.expired.expiredStart, data.expired.expiredEnd);
-      return (data.code == code) && (!data.expired.expired || checkExpired) && (data.infinity || data.quantity > 0);
+      let checkExpired = moment().isBetween(data.expired.expiredStart, data.expired.expiredEnd);
+      return (data.code == code) && (!data.expired.expired || checkExpired) && (data.infinity || data.quantity > 0) && (data.owner ? checkUser == data.owner : true);
     });
 
     // response
@@ -58,8 +60,8 @@ router.get("/all", (req, res) => { // *** only admin
 // create
 router.post("/create", (req, res) => { // *** don't forgot to add middleware admin when production
   // check payload is not empty
-  if (_.isEmpty(req.body.payload)) return res.status(400).json(msg.badRequest());
-  if (!req.body.payload.code) return res.status(400).json(msg.badRequest());
+  if (_.isEmpty(req.body.payload)) return res.status(400).json(msg.badRequest('bad param, payload is empty.'));
+  if (!req.body.payload.code) return res.status(400).json(msg.badRequest('bad param, payload code is empty.'));
 
   var payload = req.body.payload
 
