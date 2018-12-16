@@ -18,6 +18,8 @@ import fileUpload from 'express-fileupload';
 // import jwtDecode from 'jwt-decode';
 // require("dotenv-json")();
 
+console.log(process.env);
+
 
 const app = express();
 const keys = require("./config/keys");

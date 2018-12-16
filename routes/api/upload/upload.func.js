@@ -11,15 +11,15 @@ import isEmpty from 'lodash.isempty';
 //
 
 // * init storage by environment
-if (process.env.NODE_ENV == 'developing') {
+if (process.env.NODE_ENV == 'production') {
   var storage = new Storage({
-    projectId: 'sn-curtain-1532605297836',
-    keyFilename: 'config/google.key.json'
+    projectId: 'sn-curtain-prod',
+    // keyFilename: 'config/google.key.prod.json'
   });
 } else {
   var storage = new Storage({
-    projectId: 'sn-curtain-1532605297836',
-    keyFilename: 'config/google.key.json'
+    projectId: 'neural-passkey-225609',
+    // keyFilename: 'config/google.key.dev.json'
   });
 }
 
