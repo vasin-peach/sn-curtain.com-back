@@ -6,6 +6,14 @@ import express from "express";
 import isEmpty from "lodash.isempty";
 import msg from "../responseMsg";
 
+// * Declear Bucket Enviroment
+if (process.env.NODE_ENV == 'production') {
+  var bucketEnv = 'prod'
+} else {
+  var bucketEnv = 'dev'
+}
+
+
 // * Import Model
 import {
   getListBuckets,
@@ -69,10 +77,10 @@ router.post("/", async (req, res) => {
 
 
     // * create bucket if 'sn-curtain-payment' is empty
-    if (listBuckets.indexOf("sn-curtain-payment") < 0) {
+    if (listBuckets.indexOf(`sn-curtain-${bucketEnv}-payment`) < 0) {
 
       // * create bucket
-      const name = "sn-curtain-payment";
+      const name = `sn-curtain-${bucketEnv}-payment`;
       const option = {
         location: "ASIA",
         storageClass: "COLDLINE"
@@ -82,7 +90,7 @@ router.post("/", async (req, res) => {
     }
 
     // * upload payment image
-    const bucketName = 'sn-curtain-payment';
+    const bucketName = `sn-curtain-${bucketEnv}-payment`;
     const filename = imageData;
     const option = {
       gzip: true,

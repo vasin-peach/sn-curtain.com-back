@@ -25,6 +25,9 @@ build-image:
     - master
     - staging
   script:
+    - echo "${GOOGLE_APPLICATION_CREDENTIALS_STAG}" > "./config/gcp.key.stag.json"
+    - echo "${GOOGLE_APPLICATION_CREDENTIALS_PROD}" > "./config/gcp.key.prod.json"
+    - echo "$(ls config)"
     - "docker build --pull --no-cache -t $DOCKER_IMAGE_NAME ."
     - "docker push $DOCKER_IMAGE_NAME"
   after_script:
