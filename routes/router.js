@@ -15,6 +15,7 @@ const OrderRoute = require('./api/order/order');
 const UploadRoute = require('./api/upload/upload');
 const WeightRoute = require('./api/weight/weight');
 const Redirect = require('./api/redirect');
+const Permission = require('./api/permission');
 
 
 // Default route
@@ -38,5 +39,6 @@ router.use('/order', OrderRoute);
 router.use('/upload', UploadRoute);
 router.use('/weight', WeightRoute);
 router.use('/redirect', Redirect);
+router.use('/permission', Permission);
 
 module.exports = router;
