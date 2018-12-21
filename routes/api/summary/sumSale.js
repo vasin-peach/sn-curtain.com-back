@@ -50,7 +50,7 @@ router.post("/date", async (req, res) => {
       },
       {
         $group: {
-          _id: "$_id",
+          _id: "1",
           sum: {
             $sum: "$pricing.summary_price"
           }
