@@ -14,6 +14,9 @@ const BasketRoute = require('./api/basket/basket');
 const OrderRoute = require('./api/order/order');
 const UploadRoute = require('./api/upload/upload');
 const WeightRoute = require('./api/weight/weight');
+const Redirect = require('./api/redirect');
+const Permission = require('./api/permission');
+const Summary = require('./api/summary/summary');
 
 
 // Default route
@@ -36,5 +39,8 @@ router.use('/basket', BasketRoute);
 router.use('/order', OrderRoute);
 router.use('/upload', UploadRoute);
 router.use('/weight', WeightRoute);
+router.use('/redirect', Redirect);
+router.use('/permission', Permission);
+router.use('/summary', Summary);
 
 module.exports = router;

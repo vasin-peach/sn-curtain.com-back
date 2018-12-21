@@ -2,12 +2,41 @@
 // ─── IMPORT ─────────────────────────────────────────────────────────────────────
 //
 
+import isEmpty from 'lodash.isempty';
+
 //
 // ─── FUNCTION ───────────────────────────────────────────────────────────────────
 //
 
 const sessionFunction = {
-  async updateSession(req, data, target) {
+  getSession(req, target) {
+
+    /**
+     * @param req req param from router
+     * @target target target to retrieve
+     */
+
+    return new Promise((resolve, reject) => {
+
+      // ! Validate
+
+
+      if (!req || isEmpty(req)) return reject('bad param, req is empty.');
+      if (!target) return reject('bad param, target is empty.');
+
+
+      // ! Retrieve
+
+      try {
+        return resolve(req.session[target]);
+      } catch (err) {
+        return reject('something wrong, cannot retrieve data. \n' + err);
+      }
+
+    })
+
+  },
+  updateSession(req, data, target) {
 
     /**
      * @param req req param from router
@@ -16,7 +45,22 @@ const sessionFunction = {
      */
 
     return new Promise((resolve, reject) => {
-      console.log(req.session);
+
+      // ! Validate
+
+      if (!req || isEmpty(req)) return reject('bad param, req is empty.');
+      if (!data || isEmpty(data)) return reject('bad param, data is empty.');
+      if (!target) return reject('bad param, target is empty.');
+
+      // ! Update Session
+
+      try {
+        req.session[target] = data;
+        return resolve(req.session[target]);
+      } catch (err) {
+        return reject('something wrong, cannot set data to session. \n' + err);
+      }
+
     })
   }
 }

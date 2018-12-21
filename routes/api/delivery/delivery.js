@@ -7,6 +7,9 @@ const keys = require('../../../config/keys');
 
 // Model
 const Delivery = require('../../../models/Delivery');
+import {
+  authPermission
+} from '../auth/auth.func';
 
 ///
 // Route
@@ -20,8 +23,14 @@ router.get('/', (req, res) => {
   })
 })
 
-router.post('/create', (req, res) => { // must be admin
+router.post('/create', async (req, res) => { // must be admin
+
+  // ! Validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
   if (_.isEmpty(req.body.payload)) return res.status(400).json(msg.badRequest());
+
 
   var payload = req.body.payload
   Delivery.create(payload, (err, data) => {

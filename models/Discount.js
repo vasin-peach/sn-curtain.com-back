@@ -19,6 +19,7 @@ const discountSchema = new Schema({
   quantity: {
     type: Number
   },
+  owner: String,
   infinity: Boolean,
   expired: {
     expired: Boolean,

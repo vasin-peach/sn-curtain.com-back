@@ -40,4 +40,4 @@ const profileFunction = {
   }
 }
 
-module.exports = profileFunction
+module.exports = profileFunction;

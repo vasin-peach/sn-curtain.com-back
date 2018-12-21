@@ -15,6 +15,9 @@ import User from '../../../models/User';
 import localRouter from './local';
 import facebookRouter from './facebook';
 import googleRouter from './google';
+import {
+  checkPermission
+} from './auth.func';
 
 ///
 // Variable
@@ -42,7 +45,7 @@ router.post("/", (req, res) => {
 // Logout
 router.get("/logout", (req, res) => {
   req.logout();
-  res.redirect(req.cookies.redirect ? keys.FRONTEND_URI + req.cookies.redirect : keys.FRONTEND_URI + '/login');
+  res.redirect(req.session.redirect ? `${keys.FRONTEND_URI}/${req.session.redirect}` : `${keys.FRONTEND_URI}/login`);
 })
 
 // Get User Profile
