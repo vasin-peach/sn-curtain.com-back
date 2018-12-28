@@ -58,7 +58,10 @@ app.use(cookieSession({
 
 // Use helmet for addional security
 app.use(helmet());
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  limit: '50mb',
+  extended: true
+}));
 
 app.use(bodyParser.urlencoded({
   extended: true
