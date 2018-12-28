@@ -5,6 +5,9 @@ import {
   Storage
 } from '@google-cloud/storage';
 import isEmpty from 'lodash.isempty';
+var stream = require('stream');
+var mimeTypes = require('mimetypes');
+
 
 //
 // ─── INIT CLIENT ────────────────────────────────────────────────────────────────
@@ -117,6 +120,41 @@ const uploadFunction = {
 
   },
 
+  async uploadBase64(base64, bucketName, userData) {
+
+    /**
+     * @param { OBJECT } base64 raw base64 image
+     * @param { OBJECT } userData user session
+     * @param { STRING } bucketName name to set into bucket
+     */
+
+    return new Promise((resolve, reject) => {
+
+      var mimeType = base64.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)[1]
+      var fileName = Date.now() + '-original.' + mimeTypes.detectExtension(mimeType)
+      var base64EncodedImageString = base64.replace(/^data:image\/\w+;base64,/, '')
+      var imageBuffer = new Buffer(base64EncodedImageString, 'base64')
+
+      const bucket = storage.bucket(bucketName);
+      const file = bucket.file(fileName);
+
+      file.save(imageBuffer, {
+        metadata: {
+          contentType: mimeType
+        },
+        public: true,
+        validation: 'md5',
+        gzip: true
+      }, (error) => {
+        if (error) return reject(error);
+        file.makePublic();
+        const publicUrl = getPublicUrl(bucketName, fileName);
+        return resolve(publicUrl);
+      })
+
+    })
+  },
+
   async deleteImage(bucketname, filename) {
 
     /**
@@ -133,7 +171,31 @@ const uploadFunction = {
     } catch (err) {
       return Promise.resolve(false);
     }
+  },
+
+  getMime(base64) {
+    var result = null;
+    var mime = base64.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+    if (mime && mime.length) {
+      result = mime[1];
+    }
+    return result;
+  },
+  getBase64Raw(base64) {
+    var result = null;
+    var mime = base64.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+    if (mime && mime.length) {
+      result = mime[0];
+    }
+    return result;
   }
+
+  // urlToFile(dataImage, callback) {
+  //   var bufferStream = new stream.PassThrough();
+  //   bufferStream.end(new Buffer(dataImage, 'base64'));
+  // },
+
+
 
 }
 
