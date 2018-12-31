@@ -47,13 +47,16 @@ router.get("/all", async (req, res, next) => {
   if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
   if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
 
-  Product.find({}, (err, data) => {
+
+  Product.find({}).sort({
+    "date": -1
+  }).exec((err, data) => {
     if (err) {
       return res.status(400).json(msg.isfail(data, err));
     } else {
       return res.status(200).json(msg.isSuccess(data, err));
     }
-  });
+  })
 });
 
 ///
@@ -306,7 +309,6 @@ router.post("/update", async (req, res) => {
       new: true,
       setDefaultsOnInsert: true
     });
-    console.log(queryResult);
     res.status(200).json(msg.isSuccess(queryResult));
   } catch (err) {
     res.status(400).json(msg.isfail(err));
