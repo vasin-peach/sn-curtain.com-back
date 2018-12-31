@@ -253,7 +253,8 @@ router.post("/", async (req, res) => {
       return res.status(200).json(msg.isSuccess(response, null));
     },
     error => {
-      return res.status(400).json(msg.isFail("can't create order.", error));
+      console.log(error);
+      return res.status(400).json(msg.isfail("can't create order.", error));
     }
   );
 });
@@ -291,7 +292,7 @@ router.post("/delete", async (req, res) => {
       _id: delete_id
     },
     (error, result) => {
-      if (error) return res.status(400).json(msg.isFail(null, error));
+      if (error) return res.status(400).json(msg.isfail(null, error));
       if (!result)
         return res.status(200).json(msg.isEmpty(null, "result is empty."));
       if (!result.user_id)
@@ -318,7 +319,7 @@ router.post("/delete", async (req, res) => {
       ]
     },
     (error, result) => {
-      if (error) return res.status(400).json(msg.isFail(null, error));
+      if (error) return res.status(400).json(msg.isfail(null, error));
       else return res.status(200).json(msg.isSuccess(result, null));
     }
   );
