@@ -24,6 +24,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/charge", (req, res) => {
+
   // declear list of payload
   const email = req.body.email + ", ";
   const product = JSON.parse(req.body.product);
@@ -97,6 +98,9 @@ router.post("/charge", (req, res) => {
         } else if (exist[0].discount.amount) {
           var discountType = 'amount'
           discountPrice = Math.floor(exist[0].discount.amount);
+        } else if (exist[0].discount.delivery) {
+          var discountType = "delivery";
+          discountPrice = deliveryPrice
         }
       }
 
@@ -174,7 +178,7 @@ router.post("/charge", (req, res) => {
             payment: payment_new,
             user_id: req.session.passport.user._id || null,
             tel: payment.tel,
-            order_status: 'paid'
+            order_status: 'confirm'
           }
 
           // create order

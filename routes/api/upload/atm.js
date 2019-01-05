@@ -115,7 +115,7 @@ router.post("/", async (req, res) => {
       },
       data: {
         order_image: uploadImageResult,
-        order_status: 'wait_confirm'
+        order_status: 'evidence'
       },
       option: {
         new: true
