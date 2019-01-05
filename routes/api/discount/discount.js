@@ -42,6 +42,8 @@ router.get("/id/:code", (req, res) => {
       return (data.code == code) && (!data.expired.expired || checkExpired) && (data.infinity || data.quantity > 0) && (data.owner ? checkUser == data.owner : true);
     });
 
+
+
     // response
     if (_.isEmpty(exist)) return res.status(404).json(msg.isEmpty(null, null));
     else {

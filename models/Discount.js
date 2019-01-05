@@ -28,7 +28,8 @@ const discountSchema = new Schema({
   },
   discount: {
     percent: Number,
-    amount: Number
+    amount: Number,
+    delivery: Boolean
   }
 })
 
