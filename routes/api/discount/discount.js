@@ -1,10 +1,12 @@
 const _ = require('lodash');
 const express = require("express");
 const router = express.Router();
+const mongoose = require('mongoose');
 const msg = require('../responseMsg');
 const CryptoJS = require('crypto-js');
 const keys = require('../../../config/keys');
 const moment = require('moment');
+const isEmpty = require('lodash.isempty');
 
 // Import Model
 const Discount = require('../../../models/Discount');
@@ -64,10 +66,86 @@ router.get("/all", async (req, res) => { // *** only admin
   if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
   if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
 
-  Discount.find({}, (err, data) => {
-    return err ? res.status(400).json(msg.isfail(data, err)) : res.status(200).json(msg.isSuccess(data, err))
+  // get raw data
+  let rawResult = await Discount.find({}).sort({
+    updated_at: -1
   });
+
+  // rawResult is empty return 400
+  if (isEmpty(rawResult)) return res.status(400).json(msg.isfail(null, 'not found'));
+
+  // decrpyt discount code
+  rawResult.map((item, index) => {
+    rawResult[index].code = CryptoJS.AES.decrypt(item.code, keys.ENCRYPTION_SECRET_64).toString(CryptoJS.enc.Utf8)
+  });
+
+  // success
+  return res.status(200).json(msg.isSuccess(rawResult, null));
 });
+
+// ! DELETE
+router.post("/delete", async (req, res) => {
+
+  // * Validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+  if (!req.body || isEmpty(req.body)) return res.status(400).json(msg.badRequest(null, 'payload is empty'));
+
+  const id = req.body.id;
+
+  Discount.findOneAndDelete({
+    _id: id
+  }, (err, data) => {
+    if (err) return res.status(400).json(msg.isfail(data, err));
+    else {
+      return res.status(200).json(msg.isSuccess(data, err));
+    }
+  })
+})
+
+// ! UPDATE
+router.post("/update", async (req, res) => {
+
+  // * Validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+  if (!req.body || isEmpty(req.body)) return res.status(400).json(msg.badRequest(null, 'payload is empty'));
+
+  let payload = req.body;
+  const id = req.body._id;
+
+
+  // * Get list of code
+  const rawCode = await Discount.find({})
+  const decryptCode = await rawCode.filter(x => x._id != id).map(item => CryptoJS.AES.decrypt(item.code, keys.ENCRYPTION_SECRET_64).toString(CryptoJS.enc.Utf8))
+
+
+  // * Check if update code is same as code in database
+  if (decryptCode.includes(payload.code)) return res.status(400).json(msg.badRequest(null, 'code is exist'))
+
+  // * Encrypt update code
+  payload.code = CryptoJS.AES.encrypt(payload.code, keys.ENCRYPTION_SECRET_64).toString();
+
+  if (!payload._id) payload._id = mongoose.Types.ObjectId();
+  if (payload.owner == "" || payload.owner == " " || payload.owner == null) payload.owner = null
+
+  // * Update and return
+  Discount.findOneAndUpdate({
+    _id: id || payload._id
+  }, payload, {
+    upsert: true,
+    new: true,
+    setDefaultsOnInsert: true
+  }, (err, data) => {
+    if (err) return res.status(400).json(msg.isfail(data, err));
+    else {
+      data.code = CryptoJS.AES.decrypt(data.code, keys.ENCRYPTION_SECRET_64).toString(CryptoJS.enc.Utf8)
+      return res.status(200).json(msg.isSuccess(data, err));
+    }
+  });
+}); //// end `update` block
 
 // create
 router.post("/create", async (req, res) => { // *** don't forgot to add middleware admin when production

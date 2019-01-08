@@ -31,6 +31,11 @@ const discountSchema = new Schema({
     amount: Number,
     delivery: Boolean
   }
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  }
 })
 
 // Exports

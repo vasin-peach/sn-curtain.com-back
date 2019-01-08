@@ -51,6 +51,11 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now
   },
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  }
 })
 
 
