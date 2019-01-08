@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require('mongoose');
 const _ = require("lodash");
 const msg = require("../responseMsg");
 import isEmpty from 'lodash.isempty';
@@ -46,13 +47,16 @@ router.get("/all", async (req, res, next) => {
   if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
   if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
 
-  Product.find({}, (err, data) => {
+
+  Product.find({}).sort({
+    "date": -1
+  }).exec((err, data) => {
     if (err) {
       return res.status(400).json(msg.isfail(data, err));
     } else {
       return res.status(200).json(msg.isSuccess(data, err));
     }
-  });
+  })
 });
 
 ///
@@ -297,15 +301,17 @@ router.post("/update", async (req, res) => {
 
   // * Mongoose Query
   try {
+    if (!product._id) product._id = mongoose.Types.ObjectId();
     const queryResult = await Product.findByIdAndUpdate({
-      _id: product._id
+      _id: product._id || null
     }, product, {
       upsert: true,
-      new: true
+      new: true,
+      setDefaultsOnInsert: true
     });
     res.status(200).json(msg.isSuccess(queryResult));
   } catch (err) {
-    res.status(400).json(msg.isFail(err));
+    res.status(400).json(msg.isfail(err));
   }
 
 }); // ! END BLOCK

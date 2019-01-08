@@ -12,6 +12,9 @@ const moment = require("moment");
 
 import Order from "../../../models/Order";
 import {
+  authPermission
+} from '../auth/auth.func';
+import {
   createOrder
 } from "../payment/order";
 
@@ -93,9 +96,9 @@ router.post("/", async (req, res) => {
 
   // list of payload
   const email = req.body.email + ", ";
-  const product = JSON.parse(req.body.product);
-  const discountCode = JSON.parse(req.body.discount || 0);
-  const delivery = JSON.parse(req.body.delivery || 0);
+  const product = await JSON.parse(req.body.product);
+  const discountCode = await JSON.parse(req.body.discount || 0);
+  const delivery = await JSON.parse(req.body.delivery || 0);
   const payment = req.body.payment;
 
   // list of price
@@ -123,33 +126,36 @@ router.post("/", async (req, res) => {
   }, email);
 
   // ! discount
-
   // validate discount
-  if (!discountCode || discountCode == "" || discountCode == " ") {
+  if (discountCode && discountCode != "" && discountCode != " ") {
     // get discount list from db
-    const discountList = await Discount.find({}, async (err, data) => {
-      return data.map(data => {
-        return {
-          code: CryptoJS.AES.decrypt(
-            data.code,
-            keys.ENCRYPTION_SECRET_64
-          ).toString(CryptoJS.enc.Utf8),
+
+    var discountList = [];
+    await Discount.find({}, (err, data) => {
+
+      // create list of discount
+      data.map((data) => {
+        discountList.push({
+          code: CryptoJS.AES.decrypt(data.code, keys.ENCRYPTION_SECRET_64).toString(CryptoJS.enc.Utf8),
           discount: data.discount,
           expired: data.expired,
           infinity: data.infinity,
-          quantity: data.quantity
-        };
-      }, []);
+          quantity: data.quantity,
+          owner: data.owner
+        });
+      });
     });
 
     // check discountcode is exist in discount list
     const discountExist = await discountList.filter(data => {
       // check code date
-      var checkExpired = moment().isBetween(
-        data.expired.expiredStart,
-        data.expired.expiredEnd
-      );
 
+      if (data.expired.expired) {
+        var checkExpired = moment().isBetween(
+          data.expired.expiredStart,
+          data.expired.expiredEnd
+        );
+      }
       return (
         data.code == discountCode &&
         (!data.expired.expired || checkExpired) &&
@@ -171,6 +177,9 @@ router.post("/", async (req, res) => {
         // amount type
         var discountType = "amount";
         discountPrice = Math.floor(discountExist[0].discount.amount);
+      } else if (discountExist[0].discount.delivery) {
+        var discountType = "delivery";
+        discountPrice = deliveryPrice
       }
     }
   }
@@ -253,7 +262,7 @@ router.post("/", async (req, res) => {
       return res.status(200).json(msg.isSuccess(response, null));
     },
     error => {
-      return res.status(400).json(msg.isFail("can't create order.", error));
+      return res.status(400).json(msg.isfail("can't create order.", error));
     }
   );
 });
@@ -267,31 +276,42 @@ router.post("/delete", async (req, res) => {
   let delete_id = req.body.delete_id;
   let delete_user = req.session.passport.user._id;
 
+
+
   // *
   // * ─── VALIDATE ───────────────────────────────────────────────────────────────────
   // *
 
-  // validate param
-  if (!delete_id)
-    return res
-      .status(400)
-      .json(msg.badRequest(null, "bad request, `req.body.id` is invalid."));
-  if (!delete_user)
-    return res
-      .status(400)
-      .json(
-        msg.unAuth(
-          null,
-          "unauthorized, `req.session.passport.user` is invalid."
-        )
-      );
+  // // validate param
+  // if (!delete_id)
+  //   return res
+  //     .status(400)
+  //     .json(msg.badRequest(null, "bad request, `req.body.id` is invalid."));
+  // if (!delete_user)
+  //   return res
+  //     .status(400)
+  //     .json(
+  //       msg.unAuth(
+  //         null,
+  //         "unauthorized, `req.session.passport.user` is invalid."
+  //       )
+  //     );
+
+  if (!delete_id || !delete_user) {
+
+    // * Validate
+    const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+    if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+    if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+  }
+
 
   // validate user is owner order
   await Order.findOne({
       _id: delete_id
     },
     (error, result) => {
-      if (error) return res.status(400).json(msg.isFail(null, error));
+      if (error) return res.status(400).json(msg.isfail(null, error));
       if (!result)
         return res.status(200).json(msg.isEmpty(null, "result is empty."));
       if (!result.user_id)
@@ -318,10 +338,60 @@ router.post("/delete", async (req, res) => {
       ]
     },
     (error, result) => {
-      if (error) return res.status(400).json(msg.isFail(null, error));
+      if (error) return res.status(400).json(msg.isfail(null, error));
       else return res.status(200).json(msg.isSuccess(result, null));
     }
   );
 }); // // delete order block end
+
+// !
+// ! ─── GET ALL ORDER ──────────────────────────────────────────────────────────────
+// !
+
+router.post("/all", async (req, res) => {
+
+  // * Validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+
+  Order.find({}).sort({
+    "date": -1
+  }).exec((err, data) => {
+    if (err) return res.status(400).json(msg.isfail(data, err));
+    else res.status(200).json(msg.isSuccess(data, err));
+  })
+
+});
+
+// !
+// ! ─── UPDATE ORDER ───────────────────────────────────────────────────────────────
+// !
+router.post("/update", async (req, res) => {
+
+  // * validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+  if (!req.body) return res.status(400).json(msg.isEmpty(null, 'payload is empty'));
+
+  // * declear variable
+  const query = req.body.query;
+  const data = req.body.data;
+
+  // * call model
+  Order.findOneAndUpdate(query, data, (error, result) => {
+    if (error) return res.status(400).json(msg.isfail(null, error));
+    else return res.status(200).json(msg.isSuccess(result, null));
+  });
+
+
+
+})
+
+
+
+
+
 
 module.exports = router;

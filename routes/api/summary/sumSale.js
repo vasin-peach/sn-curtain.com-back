@@ -33,7 +33,7 @@ router.post("/date", async (req, res) => {
     const queryResult = await Order.aggregate([{
         $match: {
           $and: [{
-              order_status: "paid"
+              order_status: "success"
             },
             {
               updated_at: {

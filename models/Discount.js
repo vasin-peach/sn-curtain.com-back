@@ -28,7 +28,13 @@ const discountSchema = new Schema({
   },
   discount: {
     percent: Number,
-    amount: Number
+    amount: Number,
+    delivery: Boolean
+  }
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
   }
 })
 
