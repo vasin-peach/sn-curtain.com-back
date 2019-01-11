@@ -190,6 +190,8 @@ router.post("/", async (req, res) => {
 
   productPrice = productPrice - discountPrice + deliveryPrice;
   productPrice = productPrice <= 0 ? 20 : productPrice;
+  productPrice += Math.round(((productPrice) * 3.65 / 100) + (((productPrice) * 3.65 / 100) * 7 / 100));
+  console.log(productPrice);
   productPrice = String(productPrice) + "00";
 
   // *
@@ -302,7 +304,7 @@ router.post("/delete", async (req, res) => {
     // * Validate
     const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
     if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
-    if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+    else if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
   }
 
 
@@ -312,11 +314,11 @@ router.post("/delete", async (req, res) => {
     },
     (error, result) => {
       if (error) return res.status(400).json(msg.isfail(null, error));
-      if (!result)
+      else if (!result)
         return res.status(200).json(msg.isEmpty(null, "result is empty."));
-      if (!result.user_id)
+      else if (!result.user_id)
         return res.status(404).json(msg.isEmpty(null, "order not found"));
-      if (result.user_id != delete_user)
+      else if (result.user_id != delete_user)
         return res
           .status(400)
           .json(msg.unAuth(null, "you are not owner this order."));
@@ -384,10 +386,35 @@ router.post("/update", async (req, res) => {
     if (error) return res.status(400).json(msg.isfail(null, error));
     else return res.status(200).json(msg.isSuccess(result, null));
   });
+}); //// end `update` block
 
 
+// !
+// ! ─── CANCEL ORDER ───────────────────────────────────────────────────────────────
+// !
+router.post("/cancel", async (req, res) => {
 
-})
+  // * validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+  if (!req.body) return res.status(400).json(msg.isEmpty(null, 'payload is empty'));
+
+  // * declear varaible
+  const id = req.body.id
+
+  // * call model
+  Order.findOneAndUpdate({
+    _id: id
+  }, {
+    order_status: 'cancel'
+  }, {
+    new: true
+  }, (error, result) => {
+    if (error) return res.status(400).json(msg.isfail(null, error));
+    else return res.status(200).json(msg.isSuccess(result, null));
+  });
+}); //// end `cancel` block
 
 
 

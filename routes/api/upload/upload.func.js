@@ -163,12 +163,14 @@ const uploadFunction = {
      */
 
 
+
     if (!bucketname || !filename) return Promise.reject('param is empty');
 
     try {
       const deleteImageResult = await storage.bucket(bucketname).file(filename).delete();
       return Promise.resolve(deleteImageResult);
     } catch (err) {
+      console.log(err);
       return Promise.resolve(false);
     }
   },
