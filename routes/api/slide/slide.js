@@ -6,9 +6,13 @@ import mongoose from "mongoose";
 import {
   authPermission
 } from "../auth/auth.func";
+import {
+  deleteImage
+} from '../upload/upload.func';
 
 // ────────────────────────────────────────────────────────────────────────────────
 const router = express.Router();
+const Env = process.env.NODE_ENV == 'production' ? 'prod' : 'dev'
 // ────────────────────────────────────────────────────────────────────────────────
 
 //
@@ -78,6 +82,7 @@ router.post("/delete", async (req, res) => {
 
   // * Declear
   const id = req.body.id;
+  const type = req.body.type;
 
   // * Validate
   const authPermissionLevel = await authPermission(req).then(result => result, err => [true, err]);
@@ -92,8 +97,14 @@ router.post("/delete", async (req, res) => {
   Slide.findOneAndRemove({
       _id: id
     },
-    (err, data) => {
+    async (err, data) => {
       if (err) return res.status(400).json(msg.isfail(data, err));
+
+      // delete image in bucket
+      const imageName = await data.src.split('/')[data.src.split('/').length - 1];
+      const bucketName = `sn-curtain-${Env}-slide-${type}`;
+      const deleteResult = await deleteImage(bucketName, imageName);
+
       return res.status(200).json(msg.isSuccess(data, err));
     }
   );
