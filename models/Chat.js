@@ -6,16 +6,15 @@ const {
 const chatSchema = new Schema({
   author: [{
     id: String,
-    name: String
+    name: String,
+    image: String
   }],
   msg: [{
     author: String,
     type: {
-      type: Object,
-      text: String,
-      file: String
+      type: String
     },
-    data: String
+    data: Object
   }]
 }, {
   timestamps: {

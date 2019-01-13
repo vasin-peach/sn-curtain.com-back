@@ -1,12 +1,13 @@
 import express from "express";
+import msg from "./responseMsg";
 import isEmpty from "lodash.isempty";
-import msg from "../responseMsg";
-import Chat from "../../../models/Chat";
+
 
 // ────────────────────────────────────────────────────────────────────────────────
 const router = express.Router();
-const Env = process.env.NODE_ENV == 'production' ? 'prod' : 'dev';
+const Env = process.env.NODE_ENV == 'production' ? 'prod' : 'dev'
 // ────────────────────────────────────────────────────────────────────────────────
+
 
 //
 // ────────────────────────────────────────────────── I ──────────
@@ -15,31 +16,33 @@ const Env = process.env.NODE_ENV == 'production' ? 'prod' : 'dev';
 //
 
 // !
-// ! ─── GET CHAT ───────────────────────────────────────────────────────────────────
+// ! ─── GET GUEST ──────────────────────────────────────────────────────────────────
 // !
 
-router.get("/:uid", async (req, res) => {
+router.get("/", async (req, res) => {
 
-  // * Declear
-  let user = req.session.passport.user ? req.session.passport.user : req.params.uid;
-  const perm = req.session.passport.user ? user.permission.value : 0;
-  // // * Validate
-  // if (!user || !perm) return res.status(400).json(msg.isEmpty('bad request, auth is empty'))
 
-  // * Model
-  try {
-    const result = await Chat.find({
-      "author.id": user._id || user
-    }).sort({
-      updatedAt: -1
-    });
-    return res.status(200).json(msg.isSuccess(result, null));
-  } catch (error) {
-    return res.status(400).json(msg.isfail(null, error));
-  }
-
+  // return
+  return res.status(200).json(msg.isSuccess(req.session.guest || null, null));
 })
 
+
+
+// !
+// ! ─── UPDATE GUEST ───────────────────────────────────────────────────────────────
+// !
+
+router.post("/update", async (req, res) => {
+  // validate
+  if (!req.body || !req.body.payload || isEmpty(req.body.payload)) return res.status(400).json(msg.isfail(null, 'payload is empty'));
+
+  // set session
+  req.session.guest = req.body.payload
+
+  // return
+  return res.status(200).json(msg.isSuccess(req.session.guest, null));
+
+})
 
 
 

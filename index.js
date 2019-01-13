@@ -15,10 +15,8 @@ import middlewareCSRF from './middleware/middlewareCSRF';
 import autoIncrement from 'mongoose-auto-increment'
 import fileUpload from 'express-fileupload';
 import Chat from './models/Chat';
-import {
-  Socket
-} from "dgram";
-// import _ from 'lodash';
+import User from './models/User';
+import _ from 'lodash';
 // import jwtDecode from 'jwt-decode';
 // require("dotenv-json")();
 
@@ -183,23 +181,83 @@ app.use(sessionMiddleware);
 // ─── SOCKET.IO ───────────────────────────────────────────────────────────────────────
 //
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
 
   // get user data
-  const room = socket.request.session.passport.user;
+  const admin = await User.find({
+    "permission.value": {
+      $gt: 2
+    }
+  });
   const user = socket.request.session.passport.user ? {
     status: 'user',
     id: socket.request.session.passport.user
   } : {
     status: 'guest',
-    id: new mongoose.mongo.ObjectId()
+    id: null
   }
 
-  // get user permission
-  const userPerm = user.status == 'guest' ? null : user.permission;
 
-  socket.on('chat message', message => {
-    io.emit('chat message', message);
+  // get user permission
+  const userPerm = user.status == 'guest' ? null : socket.request.session.passport.user.permission.value;
+
+  socket.on('chat message', async message => {
+
+    // // user not auth
+    // if (user.status == 'guest') {
+    // user chat first time
+
+    if (!message.room) {
+      // init author
+      const author = Array();
+      author[0] = {
+        id: user.id ? user.id._id : message.client,
+        author: user.id ? user.id.email : message.client,
+        image: user.id ? user.id.photo : null
+      };
+      admin.map(x => author.push({
+        id: x._id,
+        author: x.email,
+        image: x.photo
+      }));
+
+      // init message
+      let messageTemp = message.msg
+      message.msg.map((x, y) => {
+        if (x.author == 'me') messageTemp[y].author = user.id || message.client
+      })
+
+      const result = await Chat.create({
+        author: author,
+        msg: messageTemp,
+      });
+
+      io.emit('chat guest updated', result);
+    } else {
+      // second message
+
+      // init message
+      let messageTemp = message.msg
+      message.msg.map((x, y) => {
+        if (x.author == 'me') messageTemp[y].author = user.id || message.client
+      });
+
+      try {
+        const result = await Chat.findOneAndUpdate({
+          _id: message.room
+        }, {
+          msg: messageTemp
+        }, {
+          new: true
+        });
+
+        io.emit('chat guest updated', result);
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+      // }
+    }
   });
 });
 

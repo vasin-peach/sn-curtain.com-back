@@ -18,8 +18,8 @@ const Redirect = require('./api/redirect');
 const Permission = require('./api/permission');
 const Summary = require('./api/summary/summary');
 const Slide = require('./api/slide/slide');
-const Chat = require('./api/chat/chat')
-
+const Chat = require('./api/chat/chat');
+const Guest = require('./api/guest');
 
 // Default route
 router.get("/", function (req, res) {
@@ -46,5 +46,6 @@ router.use('/permission', Permission);
 router.use('/summary', Summary);
 router.use('/slide', Slide);
 router.use('/chat', Chat);
+router.use('/guest', Guest);
 
 module.exports = router;
