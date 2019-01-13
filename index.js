@@ -14,6 +14,10 @@ import csrf from "csurf";
 import middlewareCSRF from './middleware/middlewareCSRF';
 import autoIncrement from 'mongoose-auto-increment'
 import fileUpload from 'express-fileupload';
+import Chat from './models/Chat';
+import {
+  Socket
+} from "dgram";
 // import _ from 'lodash';
 // import jwtDecode from 'jwt-decode';
 // require("dotenv-json")();
@@ -62,6 +66,8 @@ app.use(bodyParser.json({
   limit: '50mb',
   extended: true
 }));
+
+
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -113,11 +119,14 @@ const mongoURI =
 
 
 // Listen app with port 5000
-app.listen(5000, function () {
+const server = app.listen(5000, function () {
   console.log(
     "Express app listening on port 5000 [" + process.env.NODE_ENV + "]"
   );
 });
+
+// connect socket.io
+const io = require('socket.io')(server);
 
 
 // Connect to mongoDB
@@ -154,6 +163,46 @@ mongoose.connect(
 );
 
 autoIncrement.initialize(db);
+
+// Socket IO
+
+
+var sessionMiddleware = cookieSession({
+  name: 'session',
+  keys: ['keys.COOKIE_SECRET'],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+})
+
+io.use(function (socket, next) {
+  sessionMiddleware(socket.request, socket.request.res, next);
+});
+
+app.use(sessionMiddleware);
+
+//
+// ─── SOCKET.IO ───────────────────────────────────────────────────────────────────────
+//
+
+io.on('connection', (socket) => {
+
+  // get user data
+  const room = socket.request.session.passport.user;
+  const user = socket.request.session.passport.user ? {
+    status: 'user',
+    id: socket.request.session.passport.user
+  } : {
+    status: 'guest',
+    id: new mongoose.mongo.ObjectId()
+  }
+
+  // get user permission
+  const userPerm = user.status == 'guest' ? null : user.permission;
+
+  socket.on('chat message', message => {
+    io.emit('chat message', message);
+  });
+});
+
 
 // Include routes
 const routes = require("./routes/router");

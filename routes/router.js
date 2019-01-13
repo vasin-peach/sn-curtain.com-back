@@ -18,6 +18,7 @@ const Redirect = require('./api/redirect');
 const Permission = require('./api/permission');
 const Summary = require('./api/summary/summary');
 const Slide = require('./api/slide/slide');
+const Chat = require('./api/chat/chat')
 
 
 // Default route
@@ -44,5 +45,6 @@ router.use('/redirect', Redirect);
 router.use('/permission', Permission);
 router.use('/summary', Summary);
 router.use('/slide', Slide);
+router.use('/chat', Chat);
 
 module.exports = router;
