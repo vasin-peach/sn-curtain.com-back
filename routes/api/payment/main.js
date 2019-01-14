@@ -24,6 +24,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/charge", (req, res) => {
+
   // declear list of payload
   const email = req.body.email + ", ";
   const product = JSON.parse(req.body.product);
@@ -97,12 +98,17 @@ router.post("/charge", (req, res) => {
         } else if (exist[0].discount.amount) {
           var discountType = 'amount'
           discountPrice = Math.floor(exist[0].discount.amount);
+        } else if (exist[0].discount.delivery) {
+          var discountType = "delivery";
+          discountPrice = deliveryPrice
         }
       }
 
       // Sum price
       productPrice = (productPrice - discountPrice) + deliveryPrice;
       productPrice = productPrice <= 0 ? 20 : productPrice;
+      productPrice += Math.round(((productPrice) * 3.65 / 100) + (((productPrice) * 3.65 / 100) * 7 / 100));
+      console.log(productPrice);
       productPrice = String(productPrice) + "00";
 
       // create charges
@@ -174,7 +180,7 @@ router.post("/charge", (req, res) => {
             payment: payment_new,
             user_id: req.session.passport.user._id || null,
             tel: payment.tel,
-            order_status: 'paid'
+            order_status: 'confirm'
           }
 
           // create order

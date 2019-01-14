@@ -17,6 +17,7 @@ const WeightRoute = require('./api/weight/weight');
 const Redirect = require('./api/redirect');
 const Permission = require('./api/permission');
 const Summary = require('./api/summary/summary');
+const Slide = require('./api/slide/slide');
 
 
 // Default route
@@ -42,5 +43,6 @@ router.use('/weight', WeightRoute);
 router.use('/redirect', Redirect);
 router.use('/permission', Permission);
 router.use('/summary', Summary);
+router.use('/slide', Slide);
 
 module.exports = router;

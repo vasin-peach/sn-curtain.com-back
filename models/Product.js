@@ -102,6 +102,11 @@ const productSchema = new Schema({
       amount: Number
     }
   }
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+  }
 })
 
 module.exports = mongoose.model('Product', productSchema);

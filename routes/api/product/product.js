@@ -1,10 +1,19 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require('mongoose');
 const _ = require("lodash");
 const msg = require("../responseMsg");
+import isEmpty from 'lodash.isempty';
 
 // Import Model
 const Product = require("../../../models/Product");
+import {
+  getListBuckets,
+  createBucket,
+  uploadImage,
+  deleteImage,
+  uploadBase64
+} from "../upload/upload.func";
 import {
   authPermission
 } from '../auth/auth.func';
@@ -17,6 +26,13 @@ var nature = null;
 var type = null;
 var search = null;
 
+
+if (process.env.NODE_ENV == 'production') {
+  var bucketEnv = 'prod'
+} else {
+  var bucketEnv = 'dev'
+}
+
 /*
   ROUTES
 */
@@ -24,14 +40,23 @@ var search = null;
 ///
 // Get product all
 ///
-router.get("/all", (req, res, next) => {
-  Product.find({}, (err, data) => {
+router.get("/all", async (req, res, next) => {
+
+  // ! Validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+
+
+  Product.find({}).sort({
+    "date": -1
+  }).exec((err, data) => {
     if (err) {
       return res.status(400).json(msg.isfail(data, err));
     } else {
       return res.status(200).json(msg.isSuccess(data, err));
     }
-  });
+  })
 });
 
 ///
@@ -188,6 +213,111 @@ router.post("/create", async (req, res, next) => {
     }
   });
 });
+
+// !
+// ! ─── DELETE PRODUCT ─────────────────────────────────────────────────────────────
+// !
+
+router.post("/delete", async (req, res) => {
+
+  // * Validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+  if (!req.body || isEmpty(req.body)) return res.status(400).json(msg.badRequest(null, 'bad request, `req.body` is empty.'));
+
+  // * Query
+  const id = req.body.id;
+  Product.find({
+    _id: id
+  }).remove().exec((err, data) => {
+    if (err) return res.status(400).json(msg.isfail(null, err));
+    else return res.status(200).json(msg.isSuccess(data, null));
+  });
+}); // ! END BLOCK
+
+
+// !
+// ! ─── UPDATE PRODUCT ─────────────────────────────────────────────────────────────
+// !
+
+router.post("/update", async (req, res) => {
+
+  // * Validate
+  const authPermissionLevel = await authPermission(req).then((result) => result, (err) => [true, err]);
+  if (authPermissionLevel[0]) return res.status(400).json(msg.badRequest(null, authPermissionLevel[1]))
+  if (authPermissionLevel <= 2) return res.status(401).json(msg.unAccess('invalid access level'));
+  if (!req.body || isEmpty(req.body)) return res.status(400).json(msg.badRequest(null, 'bad request, `req.body` is empty.'));
+
+  // * Get Image Data
+  var product = req.body;
+  const brandImage = req.body.brand.status == 'temp' ? req.body.brand : false;
+  const assetsImage = req.body.assets.filter(x => x.status == 'temp') || false;
+  const name = `sn-curtain-${bucketEnv}-product`;
+
+  // * get list of buckets
+  let listBuckets = await getListBuckets().then(buckets => {
+    return buckets.map(bucket => bucket.name);
+  });
+
+  // * create bucket if 'sn-curtain-product' is empty
+  if (listBuckets.indexOf(`sn-curtain-${bucketEnv}-product`) < 0) {
+    const name = `sn-curtain-${bucketEnv}-product`;
+    const option = {
+      location: "ASIA",
+      storageClass: "COLDLINE"
+    };
+    await createBucket(name, option);
+  }
+
+  // * Upload Brand Image
+  if (brandImage) {
+
+    // upload
+    const uploadBrandResult = await uploadBase64(brandImage.src, name, req.session);
+
+    // update brand src to img url
+    product.brand.src = uploadBrandResult;
+    delete product.brand.status;
+  }
+
+  // * Upload Assets Image
+  if (assetsImage) {
+
+    // upload
+    const uploadAssetsResult = await Promise.all(assetsImage.map((item) => uploadBase64(item.src, name, req.session)))
+
+    // update assets src to img url
+    var index = 0;
+    product.assets.map((item, count) => {
+      if (item.status == 'temp') {
+        product.assets[count].src = uploadAssetsResult[index]
+        delete product.assets[count].status;
+        delete product.assets[count]._id;
+        index += 1;
+      }
+    })
+  }
+
+  // * Mongoose Query
+  try {
+    if (!product._id) product._id = mongoose.Types.ObjectId();
+    const queryResult = await Product.findByIdAndUpdate({
+      _id: product._id || null
+    }, product, {
+      upsert: true,
+      new: true,
+      setDefaultsOnInsert: true
+    });
+    res.status(200).json(msg.isSuccess(queryResult));
+  } catch (err) {
+    res.status(400).json(msg.isfail(err));
+  }
+
+}); // ! END BLOCK
+
+
+
 
 // Update product
 router.put("/", (req, res, next) => {});
