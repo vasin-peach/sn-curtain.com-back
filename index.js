@@ -189,19 +189,25 @@ io.on('connection', async (socket) => {
       $gt: 2
     }
   });
-  const user = socket.request.session.passport.user ? {
+
+  // if (socket.request.session.passport) {
+  var user = socket.request.session.passport ? {
     status: 'user',
     id: socket.request.session.passport.user
   } : {
     status: 'guest',
     id: null
   }
-
-
   // get user permission
-  const userPerm = user.status == 'guest' ? null : socket.request.session.passport.user.permission.value;
+  var userPerm = user.status == 'guest' ? null : socket.request.session.passport.user.permission.value;
+  // }
+
+
+
 
   socket.on('chat message', async message => {
+
+    console.log(user);
 
     // // user not auth
     // if (user.status == 'guest') {
