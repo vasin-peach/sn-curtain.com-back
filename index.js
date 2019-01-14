@@ -198,8 +198,8 @@ io.on('connection', async (socket) => {
     status: 'guest',
     id: null
   }
-  // get user permission
-  var userPerm = user.status == 'guest' ? null : socket.request.session.passport.user.permission.value;
+  // // get user permission
+  // var userPerm = user.status == 'guest' ? null : socket.request.session.passport.user.permission.value;
   // }
 
 
