@@ -117,7 +117,7 @@ router.get('/profile/image', (req, res) => {
   storage
     .createBucket(bucketName)
     .then(() => {
-      console.log(`Bucket ${bucketName} created.`);
+      // console.log(`Bucket ${bucketName} created.`);
       return res.status(200).json('success');
     })
     .catch(err => {
