@@ -62,7 +62,8 @@ app.use(cookieSession({
 app.use(helmet());
 app.use(bodyParser.json({
   limit: '50mb',
-  extended: true
+  extended: true,
+  parameterLimit: 50000
 }));
 
 
@@ -207,7 +208,6 @@ io.on('connection', async (socket) => {
 
   socket.on('chat message', async message => {
 
-    console.log(user);
 
     // // user not auth
     // if (user.status == 'guest') {

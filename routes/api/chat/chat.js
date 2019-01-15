@@ -21,7 +21,7 @@ const Env = process.env.NODE_ENV == 'production' ? 'prod' : 'dev';
 router.get("/:uid", async (req, res) => {
 
   // * Declear
-  let user = req.session.passport ? req.session.passport.user : req.params.uid;
+  let user = !isEmpty(req.session.passport) ? req.session.passport.user : req.params.uid;
 
   // const perm = req.session.passport ? user.permission.value : 0;
 

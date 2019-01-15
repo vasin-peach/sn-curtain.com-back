@@ -37,7 +37,7 @@ router.post("/update", async (req, res) => {
   if (!req.body || !req.body.payload || isEmpty(req.body.payload)) return res.status(400).json(msg.isfail(null, 'payload is empty'));
 
   // set session
-  req.session.guest = req.body.payload
+  req.session.guest = req.body.payload == 'empty' ? null : req.body.payload
 
   // return
   return res.status(200).json(msg.isSuccess(req.session.guest, null));

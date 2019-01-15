@@ -43,7 +43,7 @@ router.post("/", (req, res) => {
   return res.json(msg.isSuccess('auth api', null));
 })
 // Logout
-router.get("/logout", (req, res) => {
+router.get("/logout", async (req, res) => {
   req.logout();
   res.redirect(req.session.redirect ? `${keys.FRONTEND_URI}/${req.session.redirect}` : `${keys.FRONTEND_URI}/login`);
 })
