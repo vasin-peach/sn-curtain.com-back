@@ -32,6 +32,8 @@ router.get("/:uid", async (req, res) => {
   try {
     const result = await Chat.find({
       "author.id": user._id || user
+    }).sort({
+      updatedAt: 1
     });
     return res.status(200).json(msg.isSuccess(result, null));
   } catch (error) {

@@ -244,9 +244,10 @@ io.on('connection', async (socket) => {
 
       // init message
       let messageTemp = message.msg
-      message.msg.map((x, y) => {
+      await message.msg.map((x, y) => {
         if (x.author == 'me') messageTemp[y].author = user.id || message.client
       });
+
 
       try {
         const result = await Chat.findOneAndUpdate({
