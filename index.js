@@ -186,9 +186,7 @@ io.on('connection', async (socket) => {
 
   // get user data
   const admin = await User.find({
-    "permission.value": {
-      $gt: 2
-    }
+    "permission.name": "chat"
   });
 
   // if (socket.request.session.passport) {
