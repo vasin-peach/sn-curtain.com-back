@@ -34,8 +34,10 @@ router.get("/update/:data", async (req, res) => {
   if (!data || isEmpty(data)) return res.status(400).json(msg.badRequest(null, null));
 
   // ! Update
-  const updateSessionResult = await updateSession(req, data, 'redirect').then((result) => result);
-  return res.status(200).json(msg.isSuccess(updateSessionResult, null));
+  try {
+    const updateSessionResult = await updateSession(req, data, 'redirect').then((result) => result);
+    return res.status(200).json(msg.isSuccess(updateSessionResult, null));
+  } catch (err) {}
 
 });
 

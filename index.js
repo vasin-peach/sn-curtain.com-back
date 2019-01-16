@@ -14,7 +14,9 @@ import csrf from "csurf";
 import middlewareCSRF from './middleware/middlewareCSRF';
 import autoIncrement from 'mongoose-auto-increment'
 import fileUpload from 'express-fileupload';
-// import _ from 'lodash';
+import Chat from './models/Chat';
+import User from './models/User';
+import _ from 'lodash';
 // import jwtDecode from 'jwt-decode';
 // require("dotenv-json")();
 
@@ -60,8 +62,11 @@ app.use(cookieSession({
 app.use(helmet());
 app.use(bodyParser.json({
   limit: '50mb',
-  extended: true
+  extended: true,
+  parameterLimit: 50000
 }));
+
+
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -113,11 +118,14 @@ const mongoURI =
 
 
 // Listen app with port 5000
-app.listen(5000, function () {
+const server = app.listen(5000, function () {
   console.log(
     "Express app listening on port 5000 [" + process.env.NODE_ENV + "]"
   );
 });
+
+// connect socket.io
+const io = require('socket.io')(server);
 
 
 // Connect to mongoDB
@@ -154,6 +162,112 @@ mongoose.connect(
 );
 
 autoIncrement.initialize(db);
+
+// Socket IO
+
+
+var sessionMiddleware = cookieSession({
+  name: 'session',
+  keys: ['keys.COOKIE_SECRET'],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+})
+
+io.use(function (socket, next) {
+  sessionMiddleware(socket.request, socket.request.res, next);
+});
+
+app.use(sessionMiddleware);
+
+//
+// ─── SOCKET.IO ───────────────────────────────────────────────────────────────────────
+//
+
+io.on('connection', async (socket) => {
+
+  // get user data
+  const admin = await User.find({
+    "permission.value": {
+      $gt: 2
+    }
+  });
+
+  // if (socket.request.session.passport) {
+  var user = socket.request.session.passport ? {
+    status: 'user',
+    id: socket.request.session.passport.user
+  } : {
+    status: 'guest',
+    id: null
+  }
+  // // get user permission
+  // var userPerm = user.status == 'guest' ? null : socket.request.session.passport.user.permission.value;
+  // }
+
+
+
+
+  socket.on('chat message', async message => {
+
+
+    // // user not auth
+    // if (user.status == 'guest') {
+    // user chat first time
+
+    if (!message.room) {
+      // init author
+      const author = Array();
+      author[0] = {
+        id: user.id ? user.id._id : message.client,
+        author: user.id ? user.id.email : message.client,
+        image: user.id ? user.id.photo : null
+      };
+      admin.map(x => author.push({
+        id: x._id,
+        author: x.email,
+        image: x.photo
+      }));
+
+      // init message
+      let messageTemp = message.msg
+      message.msg.map((x, y) => {
+        if (x.author == 'me') messageTemp[y].author = user.id || message.client
+      })
+
+      const result = await Chat.create({
+        author: author,
+        msg: messageTemp,
+      });
+
+      io.emit('chat guest updated', result);
+    } else {
+      // second message
+
+      // init message
+      let messageTemp = message.msg
+      await message.msg.map((x, y) => {
+        if (x.author == 'me') messageTemp[y].author = user.id || message.client
+      });
+
+
+      try {
+        const result = await Chat.findOneAndUpdate({
+          _id: message.room
+        }, {
+          msg: messageTemp
+        }, {
+          new: true
+        });
+
+        io.emit('chat guest updated', result);
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+      // }
+    }
+  });
+});
+
 
 // Include routes
 const routes = require("./routes/router");

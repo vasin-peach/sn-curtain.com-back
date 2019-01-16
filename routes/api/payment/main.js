@@ -107,8 +107,7 @@ router.post("/charge", (req, res) => {
       // Sum price
       productPrice = (productPrice - discountPrice) + deliveryPrice;
       productPrice = productPrice <= 0 ? 20 : productPrice;
-      productPrice += Math.round(((productPrice) * 3.65 / 100) + (((productPrice) * 3.65 / 100) * 7 / 100));
-      console.log(productPrice);
+      // productPrice += Math.round(((productPrice) * 3.65 / 100) + (((productPrice) * 3.65 / 100) * 7 / 100));
       productPrice = String(productPrice) + "00";
 
       // create charges

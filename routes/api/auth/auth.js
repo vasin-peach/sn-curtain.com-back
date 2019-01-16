@@ -43,7 +43,7 @@ router.post("/", (req, res) => {
   return res.json(msg.isSuccess('auth api', null));
 })
 // Logout
-router.get("/logout", (req, res) => {
+router.get("/logout", async (req, res) => {
   req.logout();
   res.redirect(req.session.redirect ? `${keys.FRONTEND_URI}/${req.session.redirect}` : `${keys.FRONTEND_URI}/login`);
 })
@@ -117,7 +117,7 @@ router.get('/profile/image', (req, res) => {
   storage
     .createBucket(bucketName)
     .then(() => {
-      console.log(`Bucket ${bucketName} created.`);
+      // console.log(`Bucket ${bucketName} created.`);
       return res.status(200).json('success');
     })
     .catch(err => {

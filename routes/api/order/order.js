@@ -190,8 +190,8 @@ router.post("/", async (req, res) => {
 
   productPrice = productPrice - discountPrice + deliveryPrice;
   productPrice = productPrice <= 0 ? 20 : productPrice;
-  productPrice += Math.round(((productPrice) * 3.65 / 100) + (((productPrice) * 3.65 / 100) * 7 / 100));
-  console.log(productPrice);
+  // productPrice += Math.round(((productPrice) * 3.65 / 100) + (((productPrice) * 3.65 / 100) * 7 / 100));
+  // console.log(productPrice);
   productPrice = String(productPrice) + "00";
 
   // *
