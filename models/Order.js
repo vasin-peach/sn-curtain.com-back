@@ -65,15 +65,7 @@ const orderSchema = new Schema({
       required: true
     }
   },
-  payment: {
-    payment_type: {
-      type: String,
-    },
-    payment_evidence: {},
-    customer_name: {
-      type: String,
-    },
-  },
+  payment: Object,
   user_id: {
     type: String,
     required: true
