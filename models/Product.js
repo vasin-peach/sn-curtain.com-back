@@ -38,6 +38,9 @@ const productSchema = new Schema({
   view: {
     type: Number
   },
+  buy: {
+    type: Number
+  },
   brand: {
     src: {
       type: String
