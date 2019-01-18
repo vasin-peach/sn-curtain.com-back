@@ -49,8 +49,8 @@ const sessionFunction = {
       // ! Validate
 
       if (!req || isEmpty(req)) return reject('bad param, req is empty.');
-      if (!data || isEmpty(data)) return reject('bad param, data is empty.');
-      if (!target) return reject('bad param, target is empty.');
+      else if (!data || isEmpty(data)) return reject('bad param, data is empty.');
+      else if (!target) return reject('bad param, target is empty.');
 
       // ! Update Session
 
