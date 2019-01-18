@@ -237,6 +237,30 @@ router.post("/delete", async (req, res) => {
 }); // ! END BLOCK
 
 
+//
+// ─── UPDATE VIEW ────────────────────────────────────────────────────────────────
+//
+
+router.post("/view", async (req, res) => {
+
+  // * Declear
+  const payload = req.body;
+  // * Model
+  try {
+    const result = await Product.update({
+      _id: payload.id
+    }, {
+      $inc: {
+        view: 1
+      }
+    });
+    return res.status(200).json(msg.isSuccess(result, null));
+  } catch (error) {
+    return res.status(400).json(msg.isfail(null, error));
+  }
+})
+
+
 // !
 // ! ─── UPDATE PRODUCT ─────────────────────────────────────────────────────────────
 // !
