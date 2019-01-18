@@ -245,6 +245,7 @@ router.post("/", async (req, res) => {
       " "
   };
 
+
   // create obj to insert to db
   const obj = {
     order_name: email,
@@ -255,7 +256,8 @@ router.post("/", async (req, res) => {
     delivery: delivery_new,
     user_id: req.session.passport.user._id || null,
     tel: payment.tel,
-    order_status: "wait_upload"
+    order_status: "wait_upload",
+    payment: payment
   };
 
   // create order

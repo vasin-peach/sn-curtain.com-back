@@ -17,6 +17,7 @@ const WeightRoute = require('./api/weight/weight');
 const Redirect = require('./api/redirect');
 const Permission = require('./api/permission');
 const Summary = require('./api/summary/summary');
+const View = require('./api/summary/view');
 const Slide = require('./api/slide/slide');
 const Chat = require('./api/chat/chat');
 const Guest = require('./api/guest');
@@ -47,5 +48,6 @@ router.use('/summary', Summary);
 router.use('/slide', Slide);
 router.use('/chat', Chat);
 router.use('/guest', Guest);
+router.use('/view', View);
 
 module.exports = router;
