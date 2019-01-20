@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const app = express();
+const Cron = require('node-cron');
 const Product = require('../models/Product');
 const Views = require('../models/View');
 
@@ -54,7 +55,7 @@ router.use('/view', View);
 
 
 // Schedule
-Cron.schedule('Dec', async () => {
+Cron.schedule('* * * * Dec *', async () => {
 
   // Update all product view to zero.
   await Product.findOneAndUpdate({}, {
