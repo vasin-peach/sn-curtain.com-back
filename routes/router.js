@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const app = express();
+const Cron = require('node-cron');
+const Product = require('../models/Product');
+const Views = require('../models/View');
 
 // Import Route
 const CSRFRoute = require('./api/csrf/csrf');
@@ -49,5 +52,23 @@ router.use('/slide', Slide);
 router.use('/chat', Chat);
 router.use('/guest', Guest);
 router.use('/view', View);
+
+
+// Schedule
+Cron.schedule('* * * * Dec *', async () => {
+
+  // Update all product view to zero.
+  await Product.findOneAndUpdate({}, {
+    view: 0
+  });
+
+  // Update all product buy to zero.
+  await Product.findOneAndUpdate({}, {
+    buy: 0
+  });
+
+  // Delete all product views.
+  await Views.remove({});
+})
 
 module.exports = router;
