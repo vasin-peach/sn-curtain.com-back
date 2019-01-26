@@ -160,7 +160,7 @@ router.post('/profile/address/update', (req, res) => {
 });
 
 
-router.use('/local', localRouter);
+// router.use('/local', localRouter);
 router.use('/facebook', facebookRouter);
 router.use('/google', googleRouter);
 

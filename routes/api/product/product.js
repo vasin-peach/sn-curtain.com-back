@@ -163,7 +163,7 @@ router.get("/popular", (req, res) => {
   Product.find({})
     .sort({})
     .sort({
-      view: -1
+      buy: -1
     })
     .limit(6)
     .exec((err, data) => {
