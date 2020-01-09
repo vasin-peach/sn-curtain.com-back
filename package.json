@@ -75,7 +75,7 @@
     "prettier": "^1.19.1"
   },
   "husky": {
-    "hook": {
+    "hooks": {
       "pre-commit": "lint-staged"
     }
   },
