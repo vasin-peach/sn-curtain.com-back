@@ -118,7 +118,9 @@ const mongoURI = `mongodb+srv://${keys.MONGO_USER}:${keys.MONGO_PASS}@${keys.MON
 // Listen app with port 5000
 const server = app.listen(keys.PORT, function() {
   console.log(
-    'Express app listening on port 5000 [' +
+    'Express app listening on port ' +
+      keys.PORT +
+      '[' +
       process.env.NODE_ENV +
       ']',
   )
