@@ -54,8 +54,8 @@ passport.use(
               email: profile.emails[0].value,
               provider: 'facebook',
               permission: {
-                name: 'customer',
-                value: 1,
+                name: 'admin',
+                value: 3,
               },
               photo: profile._json.picture.data.url,
               // birthday: profile._json.birthday,
