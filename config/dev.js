@@ -8,11 +8,13 @@ module.exports = {
   SESSION_SECRET: 'dev',
   FACEBOOK_SECRET: '402b92160fb175ae6d0a258e1d78cdef',
   FACEBOOK_CLIENT: '637476463318135',
-  FACEBOOK_CALLBACK: 'http://localhost:5000/auth/facebook/callback',
+  FACEBOOK_CALLBACK:
+    'https://sn-curtain.herokuapp.com//auth/facebook/callback',
   GOOGLE_SECRET: 'tNnb_MnzOTu7PRYz6woxf-xN',
   GOOGLE_CLIENT:
     '227591138588-jqa0taaj6pue1m1t566ecm0pevl0fnb3.apps.googleusercontent.com',
-  GOOGLE_CALLBACK: 'http://localhost:5000/auth/google/callback',
+  GOOGLE_CALLBACK:
+    'https://sn-curtain.herokuapp.com//auth/google/callback',
   FRONTEND_URI: 'http://localhost:8080',
   COOKIE_SECRET: 'SECRET',
   ENCRYPTION_SECRET_32:

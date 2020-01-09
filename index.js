@@ -116,7 +116,7 @@ app.use(middlewareCSRF)
 const mongoURI = `mongodb+srv://${keys.MONGO_USER}:${keys.MONGO_PASS}@${keys.MONGO_URI}/${keys.MONGO_DB}`
 
 // Listen app with port 5000
-const server = app.listen(5000, function() {
+const server = app.listen(keys.PORT, function() {
   console.log(
     'Express app listening on port 5000 [' +
       process.env.NODE_ENV +

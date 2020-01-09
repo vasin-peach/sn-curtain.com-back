@@ -15,4 +15,5 @@ module.exports = {
   COOKIE_SECRET: process.env.COOKIE_SECRET,
   ENCRYPTION_SECRET_32: process.env.ENCRYPTION_SECRET_32,
   ENCRYPTION_SECRET_64: process.env.ENCRYPTION_SECRET_64,
+  PORT: process.env.PORT || 3000,
 }
