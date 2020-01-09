@@ -5,7 +5,8 @@
   "author": "Vasin Sermsampan <Shinasaki07@gmail.com>",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "NODE_ENV=production babel-node --presets=es2017 ./index.js",
+    "start": "NODE_ENV=production yarn run babel-node ./index.js",
+    "build": "babel src -d dist",
     "dev": "NODE_ENV=developing nodemon --exec babel-node --presets=es2017 ./index.js",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.+(js|jsx|json|css|md)\""
