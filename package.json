@@ -5,8 +5,7 @@
   "author": "Vasin Sermsampan <Shinasaki07@gmail.com>",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "yarn run babel-node ./index.js",
-    "build": "babel src -d dist",
+    "start": "NODE_ENV=production babel-node --presets=es2017 ./index.js",
     "dev": "NODE_ENV=developing nodemon --exec babel-node --presets=es2017 ./index.js",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.+(js|jsx|json|css|md)\""
@@ -73,11 +72,11 @@
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint && npm run format"
-    }
-  },
+  // "husky": {
+  //   "hooks": {
+  //     "pre-commit": "npm run lint && npm run format"
+  //   }
+  // },
   "lint-staged": {
     "*.+(js|jsx)": [
       "eslint --fix",
