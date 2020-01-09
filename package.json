@@ -74,6 +74,11 @@
     "nodemon": "^1.17.3",
     "prettier": "^1.19.1"
   },
+  "husky": {
+    "hook": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "*.+(js|jsx)": [
       "eslint --fix",
