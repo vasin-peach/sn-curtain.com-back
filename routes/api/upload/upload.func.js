@@ -14,17 +14,17 @@ var mimeTypes = require('mimetypes')
 if (process.env.NODE_ENV == 'production') {
   var storage = new Storage({
     projectId: 'sn-curtain-prod',
-    keyFilename: '/config/gcp.key.prod.json',
+    keyFilename: '../../../config/gcp.key.dev.json',
   })
 } else if (process.env.NODE_ENV == 'staging') {
   var storage = new Storage({
     projectId: 'sn-curtain-storage-dev',
-    keyFilename: '/config/gcp.key.stag.json',
+    keyFilename: '../../../config/gcp.key.dev.json',
   })
 } else {
   var storage = new Storage({
     projectId: 'sn-curtain-storage-dev',
-    keyFilename: '/config/gcp.key.dev.json',
+    keyFilename: '../../../config/gcp.key.dev.json',
   })
 }
 
