@@ -1,9 +1,10 @@
 // Development config
 module.exports = {
-  MONGO_URI: 'localhost',
-  MONGO_USER: '',
-  MONGO_PASS: '',
-  MONGO_DB: 'sn-curtain',
+  MONGO_URI:
+    'cluster01-ldunu.gcp.mongodb.net/sncurtain?retryWrites=true',
+  MONGO_USER: 'admin',
+  MONGO_PASS: '1457714577',
+  MONGO_DB: 'admin',
   SESSION_SECRET: 'dev',
   FACEBOOK_SECRET: '402b92160fb175ae6d0a258e1d78cdef',
   FACEBOOK_CLIENT: '637476463318135',

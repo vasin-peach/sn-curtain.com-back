@@ -112,11 +112,8 @@ app.use(csrf())
 app.use(middlewareCSRF)
 
 // Declare MongoURI
-const mongoURI =
-  process.env.NODE_ENV === 'production' ||
-  process.env.NODE_ENV === 'staging'
-    ? `mongodb://${keys.MONGO_USER}:${keys.MONGO_PASS}@${keys.MONGO_URI}/sn-curtain`
-    : `mongodb://${keys.MONGO_URI}/sn-curtain`
+
+const mongoURI = `mongodb+srv://${keys.MONGO_USER}:${keys.MONGO_PASS}@${keys.MONGO_URI}/${keys.MONGO_DB}`
 
 // Listen app with port 5000
 const server = app.listen(5000, function() {
