@@ -81,7 +81,7 @@ router.post('/product', (req, res, next) => {
       '250x250',
     ]
     var price = []
-    for (let item = 0; item < 4; item++) {
+    for (let item = 0; item < 9; item++) {
       price.push({
         text:
           optionList[Math.floor(Math.random() * optionList.length)],
@@ -119,11 +119,11 @@ router.post('/product', (req, res, next) => {
       },
       {
         name: 'assets3',
-        src: '/static/images/test/test_01.jpg',
+        src: '/static/images/test/test_05.jpg',
       },
       {
         name: 'assets4',
-        src: '/static/images/test/test_03.jpg',
+        src: '/static/images/test/test_09.jpg',
       },
       {
         name: 'assets5',

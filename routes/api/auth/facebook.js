@@ -28,6 +28,7 @@ passport.use(
         'email',
       ],
       passReqToCallback: true,
+      proxy: true,
     },
     (req, token, refreshToken, profile, done) => {
       User.findOne(
