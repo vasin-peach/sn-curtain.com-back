@@ -1,92 +1,94 @@
-import express from "express";
-import passport from "passport";
-import keys from "../../../config/keys";
-import msg from "../responseMsg";
-import User from "../../../models/User";
-import LocalStrategy from "passport-local";
-import CryptoJS from "crypto-js";
-import _ from "lodash";
+import express from 'express'
+import passport from 'passport'
+import keys from '../../../config/keys'
+import msg from '../responseMsg'
+import User from '../../../models/User'
+import LocalStrategy from 'passport-local'
+import CryptoJS from 'crypto-js'
+import _ from 'lodash'
 
 ///
 // Variable
 ///
-const router = express.Router();
+const router = express.Router()
 
 ///
 // Init passport
 ///
 passport.use(
-  new LocalStrategy(function (email, password, done) {
-
-    User.findOne({
+  new LocalStrategy(function(email, password, done) {
+    User.findOne(
+      {
         email: email.toLowerCase(),
-        provider: 'local'
+        provider: 'local',
       },
       (err, user) => {
         // check user
-        if (err) return done(err);
-        if (!user) return done(null, false);
+        if (err) return done(err)
+        if (!user) return done(null, false)
         // check password
         const decryptPass = CryptoJS.AES.decrypt(
           user.password,
-          keys.ENCRYPTION_SECRET_64
-        ).toString(CryptoJS.enc.Utf8);
-        if (password != decryptPass) return done(null, false);
+          keys.ENCRYPTION_SECRET_64,
+        ).toString(CryptoJS.enc.Utf8)
+        if (password != decryptPass) return done(null, false)
 
         // true
-        return done(null, user);
-      }
-    );
-  })
-);
+        return done(null, user)
+      },
+    )
+  }),
+)
 
 // Local Login
-router.post("/login", passport.authenticate("local"), (req, res) => {
-  res.status(200).json(msg.isSuccess("autenticate", null));
-});
+router.post('/login', passport.authenticate('local'), (req, res) => {
+  res.status(200).json(msg.isSuccess('autenticate', null))
+})
 
 // Local Register
-router.post("/register", (req, res) => {
+router.post('/register', (req, res) => {
   // check payload
-  if (_.isEmpty(req.body)) return res.status(400).json(msg.badRequest());
+  if (_.isEmpty(req.body))
+    return res.status(400).json(msg.badRequest())
 
-  var payload = req.body;
+  var payload = req.body
 
   // encrpty password
   payload.password = CryptoJS.AES.encrypt(
     payload.password,
-    keys.ENCRYPTION_SECRET_64
-  ).toString();
+    keys.ENCRYPTION_SECRET_64,
+  ).toString()
   // init provider
-  payload.provider = "local";
+  payload.provider = 'local'
 
   // check user is already exist
-  User.findOne({
-      email: payload.email
+  User.findOne(
+    {
+      email: payload.email,
     },
     (err, data) => {
-      if (data) return res.status(409).json(msg.isExist(null, null));
+      if (data) return res.status(409).json(msg.isExist(null, null))
 
-      payload.email = payload.email.toLowerCase();
+      payload.email = payload.email.toLowerCase()
       payload.permission = {
         name: 'customer',
-        value: 1
+        value: 1,
       }
 
       // create user
       User.create(payload, (err, data) => {
-        if (err) return res.status(400).json(msg.isfail(data, err));
+        if (err) return res.status(400).json(msg.isfail(data, err))
         else {
           return res.status(201).json({
             status: 201,
-            message: "user created!",
+            message: 'user created!',
             err: err,
-            data: data
-          });
+            data: data,
+          })
         }
-      });
-    }
-  );
-});
+      })
+    },
+  )
+})
 
-module.exports = router;
+module.exports = router

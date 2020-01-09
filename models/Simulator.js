@@ -1,9 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-// ────────────────────────────────────────────────────────────────────────────────  
-const {
-  Schema
-} = mongoose
+// ────────────────────────────────────────────────────────────────────────────────
+const { Schema } = mongoose
 // ────────────────────────────────────────────────────────────────────────────────
 
 //
@@ -12,43 +10,45 @@ const {
 // ──────────────────────────────────────────────────────────────
 //
 
-
-const simulatorSchema = new Schema({
-  material: {
-    // ประเภทม่าน
-    base: String,
-    // หัวราง
-    head: {
-      enable: Boolean,
-      data: Array
+const simulatorSchema = new Schema(
+  {
+    material: {
+      // ประเภทม่าน
+      base: String,
+      // หัวราง
+      head: {
+        enable: Boolean,
+        data: Array,
+      },
+      // ราง
+      rail: {
+        enable: Boolean,
+        data: Array,
+      },
+      // ผ้าเบอร์ --> เช่น ทึบ, ใส
+      fabric: {
+        enable: Boolean,
+        data: Array,
+      },
+      // ลายผ้า --> เช่น ผ้าเบอร์ 1 (ลาย + สี)
+      striped: {
+        enable: Boolean,
+        data: Array,
+      },
+      // ห่วงผ้า --> สามารถใช้กับคอกระเช้าได้ เช่น สี, ภาพ
+      loop: {
+        enable: Boolean,
+        data: Array,
+      },
     },
-    // ราง
-    rail: {
-      enable: Boolean,
-      data: Array
-    },
-    // ผ้าเบอร์ --> เช่น ทึบ, ใส
-    fabric: {
-      enable: Boolean,
-      data: Array
-    },
-    // ลายผ้า --> เช่น ผ้าเบอร์ 1 (ลาย + สี)
-    striped: {
-      enable: Boolean,
-      data: Array
-    },
-    // ห่วงผ้า --> สามารถใช้กับคอกระเช้าได้ เช่น สี, ภาพ
-    loop: {
-      enable: Boolean,
-      data: Array
-    }
+    name: String,
   },
-  name: String,
-}, {
-  timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
-  }
-});
+  {
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    },
+  },
+)
 
-module.exports = mongoose.model('Simulator', simulatorSchema);
+module.exports = mongoose.model('Simulator', simulatorSchema)

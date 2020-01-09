@@ -1,9 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-// ────────────────────────────────────────────────────────────────────────────────  
-const {
-  Schema
-} = mongoose
+// ────────────────────────────────────────────────────────────────────────────────
+const { Schema } = mongoose
 // ────────────────────────────────────────────────────────────────────────────────
 
 //
@@ -12,26 +10,30 @@ const {
 // ──────────────────────────────────────────────────────────────
 //
 
-
-const materialSchema = new Schema({
-  // color, image
-  type: String,
-  // category ex. head, rail, fabric, striped, loop
-  category: [{
-    // name of category
+const materialSchema = new Schema(
+  {
+    // color, image
+    type: String,
+    // category ex. head, rail, fabric, striped, loop
+    category: [
+      {
+        // name of category
+        name: String,
+        // code ex. 00001 (for admin)
+        code: String,
+      },
+    ],
+    // name of meterial
     name: String,
-    // code ex. 00001 (for admin)
-    code: String
-  }],
-  // name of meterial
-  name: String,
-  // meterial image url
-  image: String
-}, {
-  timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
-  }
-});
+    // meterial image url
+    image: String,
+  },
+  {
+    timestamps: {
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    },
+  },
+)
 
-module.exports = mongoose.model('Material', materialSchema);
+module.exports = mongoose.model('Material', materialSchema)

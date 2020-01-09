@@ -1,13 +1,10 @@
 //
 // ─── IMPORT ─────────────────────────────────────────────────────────────────────
 //
-import {
-  Storage
-} from '@google-cloud/storage';
-import isEmpty from 'lodash.isempty';
-var stream = require('stream');
-var mimeTypes = require('mimetypes');
-
+import { Storage } from '@google-cloud/storage'
+import isEmpty from 'lodash.isempty'
+var stream = require('stream')
+var mimeTypes = require('mimetypes')
 
 //
 // ─── INIT CLIENT ────────────────────────────────────────────────────────────────
@@ -17,18 +14,18 @@ var mimeTypes = require('mimetypes');
 if (process.env.NODE_ENV == 'production') {
   var storage = new Storage({
     projectId: 'sn-curtain-prod',
-    keyFilename: 'config/gcp.key.prod.json'
-  });
+    keyFilename: 'config/gcp.key.prod.json',
+  })
 } else if (process.env.NODE_ENV == 'staging') {
   var storage = new Storage({
     projectId: 'sn-curtain-storage-dev',
-    keyFilename: 'config/gcp.key.stag.json'
-  });
+    keyFilename: 'config/gcp.key.stag.json',
+  })
 } else {
   var storage = new Storage({
     projectId: 'sn-curtain-storage-dev',
-    keyFilename: 'config/gcp.key.dev.json'
-  });
+    keyFilename: 'config/gcp.key.dev.json',
+  })
 }
 
 //
@@ -37,13 +34,12 @@ if (process.env.NODE_ENV == 'production') {
 
 // * get url by filename & bucketname
 function getPublicUrl(bucketname, filename) {
-
   /**
    * @param filename image name
    * @param bucketname bucket name
    */
 
-  return `https://storage.googleapis.com/${bucketname}/${filename}`;
+  return `https://storage.googleapis.com/${bucketname}/${filename}`
 }
 
 //
@@ -52,36 +48,38 @@ function getPublicUrl(bucketname, filename) {
 
 /**
  * @param storage object of google storage
- * 
+ *
  */
-
 
 const uploadFunction = {
   async getListBuckets() {
     try {
-      const [buckets] = await storage.getBuckets();
-      return Promise.resolve(buckets);
+      const [buckets] = await storage.getBuckets()
+      return Promise.resolve(buckets)
     } catch (err) {
       return Promise.reject(new Error(err))
     }
   },
 
   async createBucket(name, option) {
-
     /**
      * @param name name of bucket
      * @param option object {location: [US, EU, ASIA], storageClass: [Multi - Regional, Regional, Nearline, Coldline]}
      */
 
-    if (!name || !option || isEmpty(option)) return Promise.reject(new Error('params is empty'));
+    if (!name || !option || isEmpty(option))
+      return Promise.reject(new Error('params is empty'))
 
-    await storage.createBucket(name, option);
+    await storage.createBucket(name, option)
   },
 
-
-
-  async uploadImage(bucketName, filename, option, userData, objectId) {
-
+  async uploadImage(
+    bucketName,
+    filename,
+    option,
+    userData,
+    objectId,
+  ) {
     /**
      * @param bucketName name of bucket
      * @param filename data of image
@@ -99,29 +97,32 @@ const uploadFunction = {
      */
 
     return new Promise((resolve, reject) => {
-
-      const gcsname = userData.passport.user.email + '-' + (objectId || "") + "-" + Date.now();
-      const file = storage.bucket(bucketName).file(gcsname);
+      const gcsname =
+        userData.passport.user.email +
+        '-' +
+        (objectId || '') +
+        '-' +
+        Date.now()
+      const file = storage.bucket(bucketName).file(gcsname)
       const stream = file.createWriteStream(option)
 
-      stream.end(filename.data);
+      stream.end(filename.data)
 
-      stream.on('finish', () => { // when finish
-        file.makePublic();
-        const publicUrl = getPublicUrl(bucketName, gcsname);
-        return resolve(publicUrl);
-      });
+      stream.on('finish', () => {
+        // when finish
+        file.makePublic()
+        const publicUrl = getPublicUrl(bucketName, gcsname)
+        return resolve(publicUrl)
+      })
 
-      stream.on('error', (err) => { // when error
+      stream.on('error', (err) => {
+        // when error
         return reject(false)
-      });
-
-    });
-
+      })
+    })
   },
 
   async uploadBase64(base64, bucketName, userData) {
-
     /**
      * @param { OBJECT } base64 raw base64 image
      * @param { OBJECT } userData user session
@@ -129,76 +130,88 @@ const uploadFunction = {
      */
 
     return new Promise((resolve, reject) => {
-
-      var mimeType = base64.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/)[1]
-      var fileName = Date.now() + '-original.' + mimeTypes.detectExtension(mimeType)
-      var base64EncodedImageString = base64.replace(/^data:image\/\w+;base64,/, '')
+      var mimeType = base64.match(
+        /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/,
+      )[1]
+      var fileName =
+        Date.now() +
+        '-original.' +
+        mimeTypes.detectExtension(mimeType)
+      var base64EncodedImageString = base64.replace(
+        /^data:image\/\w+;base64,/,
+        '',
+      )
       var imageBuffer = new Buffer(base64EncodedImageString, 'base64')
 
-      const bucket = storage.bucket(bucketName);
-      const file = bucket.file(fileName);
+      const bucket = storage.bucket(bucketName)
+      const file = bucket.file(fileName)
 
-      file.save(imageBuffer, {
-        metadata: {
-          contentType: mimeType
+      file.save(
+        imageBuffer,
+        {
+          metadata: {
+            contentType: mimeType,
+          },
+          public: true,
+          validation: 'md5',
+          gzip: true,
         },
-        public: true,
-        validation: 'md5',
-        gzip: true
-      }, (error) => {
-        if (error) return reject(error);
-        file.makePublic();
-        const publicUrl = getPublicUrl(bucketName, fileName);
-        return resolve(publicUrl);
-      })
-
+        (error) => {
+          if (error) return reject(error)
+          file.makePublic()
+          const publicUrl = getPublicUrl(bucketName, fileName)
+          return resolve(publicUrl)
+        },
+      )
     })
   },
 
   async deleteImage(bucketname, filename) {
-
     /**
      * @param bucketname name of bucket
      * @param filename name of image
      */
 
-
-
-    if (!bucketname || !filename) return Promise.reject('param is empty');
+    if (!bucketname || !filename)
+      return Promise.reject('param is empty')
 
     try {
-      const deleteImageResult = await storage.bucket(bucketname).file(filename).delete();
-      return Promise.resolve(deleteImageResult);
+      const deleteImageResult = await storage
+        .bucket(bucketname)
+        .file(filename)
+        .delete()
+      return Promise.resolve(deleteImageResult)
     } catch (err) {
-      console.log(err);
-      return Promise.resolve(false);
+      console.log(err)
+      return Promise.resolve(false)
     }
   },
 
   getMime(base64) {
-    var result = null;
-    var mime = base64.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+    var result = null
+    var mime = base64.match(
+      /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/,
+    )
     if (mime && mime.length) {
-      result = mime[1];
+      result = mime[1]
     }
-    return result;
+    return result
   },
   getBase64Raw(base64) {
-    var result = null;
-    var mime = base64.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+    var result = null
+    var mime = base64.match(
+      /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/,
+    )
     if (mime && mime.length) {
-      result = mime[0];
+      result = mime[0]
     }
-    return result;
-  }
+    return result
+  },
 
   // urlToFile(dataImage, callback) {
   //   var bufferStream = new stream.PassThrough();
   //   bufferStream.end(new Buffer(dataImage, 'base64'));
   // },
-
-
-
 }
 
 module.exports = uploadFunction

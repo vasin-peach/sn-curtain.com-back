@@ -1,13 +1,11 @@
-import express from "express";
-import msg from "./responseMsg";
-import isEmpty from "lodash.isempty";
-
+import express from 'express'
+import msg from './responseMsg'
+import isEmpty from 'lodash.isempty'
 
 // ────────────────────────────────────────────────────────────────────────────────
-const router = express.Router();
+const router = express.Router()
 const Env = process.env.NODE_ENV == 'production' ? 'prod' : 'dev'
 // ────────────────────────────────────────────────────────────────────────────────
-
 
 //
 // ────────────────────────────────────────────────── I ──────────
@@ -19,32 +17,29 @@ const Env = process.env.NODE_ENV == 'production' ? 'prod' : 'dev'
 // ! ─── GET GUEST ──────────────────────────────────────────────────────────────────
 // !
 
-router.get("/", async (req, res) => {
-
-
+router.get('/', async (req, res) => {
   // return
-  return res.status(200).json(msg.isSuccess(req.session.guest || null, null));
+  return res
+    .status(200)
+    .json(msg.isSuccess(req.session.guest || null, null))
 })
-
-
 
 // !
 // ! ─── UPDATE GUEST ───────────────────────────────────────────────────────────────
 // !
 
-router.post("/update", async (req, res) => {
+router.post('/update', async (req, res) => {
   // validate
-  if (!req.body || !req.body.payload || isEmpty(req.body.payload)) return res.status(400).json(msg.isfail(null, 'payload is empty'));
+  if (!req.body || !req.body.payload || isEmpty(req.body.payload))
+    return res.status(400).json(msg.isfail(null, 'payload is empty'))
 
   // set session
-  req.session.guest = req.body.payload == 'empty' ? null : req.body.payload
+  req.session.guest =
+    req.body.payload == 'empty' ? null : req.body.payload
 
   // return
-  return res.status(200).json(msg.isSuccess(req.session.guest, null));
-
+  return res.status(200).json(msg.isSuccess(req.session.guest, null))
 })
-
-
 
 //
 // ──────────────────────────────────────────────────── I ──────────
@@ -52,4 +47,4 @@ router.post("/update", async (req, res) => {
 // ──────────────────────────────────────────────────────────────
 //
 
-module.exports = router;
+module.exports = router

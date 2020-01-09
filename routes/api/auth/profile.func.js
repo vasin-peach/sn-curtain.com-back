@@ -2,8 +2,8 @@
 // ─── IMPORT ─────────────────────────────────────────────────────────────────────
 //
 
-import isEmpty from 'lodash.isempty';
-import User from '../../../models/User';
+import isEmpty from 'lodash.isempty'
+import User from '../../../models/User'
 
 //
 // ─── FUNCTION ───────────────────────────────────────────────────────────────────
@@ -11,7 +11,6 @@ import User from '../../../models/User';
 
 const profileFunction = {
   async updateProfile(data) {
-
     /**
      * @param data OBJECT {
      *  // query to find object in mongodb
@@ -20,24 +19,27 @@ const profileFunction = {
      *  data: OBJECT
      *  // config query - optional
      *  option: OBJECT
-     * }  
+     * }
      */
 
     return new Promise((resolve, reject) => {
-
       // check param
-      if (!data || isEmpty(data)) return reject('data is empty.');
+      if (!data || isEmpty(data)) return reject('data is empty.')
 
       // query model
-      User.findOneAndUpdate(data.query, {
-        $set: data.data
-      }, data.option || null, (err, result) => {
-        if (err) return reject(err);
-        else return resolve(result);
-      });
-
-    });
-  }
+      User.findOneAndUpdate(
+        data.query,
+        {
+          $set: data.data,
+        },
+        data.option || null,
+        (err, result) => {
+          if (err) return reject(err)
+          else return resolve(result)
+        },
+      )
+    })
+  },
 }
 
-module.exports = profileFunction;
+module.exports = profileFunction

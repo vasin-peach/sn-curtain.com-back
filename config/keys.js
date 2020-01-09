@@ -7,5 +7,5 @@ if (process.env.NODE_ENV === 'production') {
   module.exports = require('./stag')
 } else {
   // Development or other environment
-  module.exports = require('./dev');
+  module.exports = require('./dev')
 }

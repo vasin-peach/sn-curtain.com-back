@@ -4,7 +4,7 @@ module.exports = {
       status: 400,
       message: 'the request is invalid.',
       err: err,
-      data: data
+      data: data,
     }
   },
   unAccess: (data = null, err = null) => {
@@ -12,7 +12,7 @@ module.exports = {
       status: 403,
       message: 'forbidden, invalid access level.',
       err: err,
-      data: data
+      data: data,
     }
   },
   unAuth: (data = null, err = null) => {
@@ -20,7 +20,7 @@ module.exports = {
       status: 400,
       message: 'bad request, not auth.',
       err: err,
-      data: data
+      data: data,
     }
   },
   isNumber: (data = null, err = null) => {
@@ -28,7 +28,7 @@ module.exports = {
       status: 400,
       message: 'page argument must be number value.',
       err: err,
-      data: data
+      data: data,
     }
   },
   isEmpty: (data, err) => {
@@ -36,7 +36,7 @@ module.exports = {
       status: 404,
       message: 'response is empty',
       err: err,
-      data: data
+      data: data,
     }
   },
   isSuccess: (data, err) => {
@@ -44,7 +44,7 @@ module.exports = {
       status: 200,
       message: 'success',
       err: err,
-      data: data
+      data: data,
     }
   },
   isfail: (data, err) => {
@@ -52,7 +52,7 @@ module.exports = {
       status: 400,
       message: 'failed',
       err: err,
-      data: data
+      data: data,
     }
   },
   isExist: (data, err) => {
@@ -60,7 +60,7 @@ module.exports = {
       status: 409,
       message: 'already exist',
       err: err,
-      data: data
+      data: data,
     }
   },
   isCreated: (data, err) => {
@@ -68,7 +68,7 @@ module.exports = {
       status: 301,
       message: 'created success.',
       err: err,
-      data: data
+      data: data,
     }
-  }
+  },
 }

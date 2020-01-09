@@ -1,8 +1,8 @@
 function admin_MW(req, res, next) {
   console.log('MiddleWare')
-  next();
+  next()
 }
 
 module.exports = {
-  admin_MW
+  admin_MW,
 }

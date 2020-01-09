@@ -1,5 +1,5 @@
 module.exports = (err, req, res, next) => {
-  if (err.code !== 'EBADCSRFTOKEN') return next(err);
+  if (err.code !== 'EBADCSRFTOKEN') return next(err)
 
   // handle CSRF token errors here
   res.status(403).json({
@@ -7,6 +7,6 @@ module.exports = (err, req, res, next) => {
     message: 'Forbidden',
     error: 'Invalid CSRF',
     headers: req.headers,
-    data: null
-  });
+    data: null,
+  })
 }
