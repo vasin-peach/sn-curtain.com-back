@@ -53,7 +53,7 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/product', (req, res, next) => {
-  for (let item = 1; item < 5; item++) {
+  for (let item = 1; item < 10; item++) {
     createProduct(item)
   }
 
@@ -81,7 +81,7 @@ router.post('/product', (req, res, next) => {
       '250x250',
     ]
     var price = []
-    for (let item = 0; item < 9; item++) {
+    for (let item = 0; item < 4; item++) {
       price.push({
         text:
           optionList[Math.floor(Math.random() * optionList.length)],
@@ -119,7 +119,7 @@ router.post('/product', (req, res, next) => {
       },
       {
         name: 'assets3',
-        src: '/static/images/test/test_05.jpg',
+        src: '/static/images/test/test_07.jpg',
       },
       {
         name: 'assets4',
@@ -127,7 +127,7 @@ router.post('/product', (req, res, next) => {
       },
       {
         name: 'assets5',
-        src: '/static/images/test/test_04.jpg',
+        src: '/static/images/test/test_05.jpg',
       },
     ]
 
