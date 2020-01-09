@@ -72,11 +72,6 @@
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0"
   },
-  // "husky": {
-  //   "hooks": {
-  //     "pre-commit": "npm run lint && npm run format"
-  //   }
-  // },
   "lint-staged": {
     "*.+(js|jsx)": [
       "eslint --fix",
