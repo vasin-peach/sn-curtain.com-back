@@ -57,7 +57,7 @@ passport.use(
                 value: 1,
               },
               photo: profile._json.picture.data.url,
-              birthday: profile._json.birthday,
+              // birthday: profile._json.birthday,
             }
             User.create(payload, (err, user) => {
               if (err) return done(err) // error
@@ -74,7 +74,7 @@ passport.use(
 router.get(
   '/login',
   passport.authenticate('facebook', {
-    scope: ['public_profile', 'user_birthday', 'email'],
+    scope: ['public_profile', 'email'],
   }),
   (req, res) => {
     res.status(200).json(msg.isSuccess('autenticate', null))
