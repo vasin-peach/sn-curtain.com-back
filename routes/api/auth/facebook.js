@@ -22,7 +22,7 @@ passport.use(
       callbackURL: keys.FACEBOOK_CALLBACK,
       profileFields: [
         'id',
-        'birthday',
+        // 'birthday',
         'displayName',
         'picture.type(large)',
         'email',
